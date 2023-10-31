@@ -14,7 +14,7 @@ Also A shout out to my beta testers!
 
 - [qb-core](https://github.com/qbcore-framework/qb-core)
 
-- [LJ/PS](https://github.com/Project-Sloth/ps-inventory) or [qb inventory](https://github.com/qbcore-framework/qb-inventory) or ox_inventory
+- [LJ/PS](https://github.com/Project-Sloth/ps-inventory) or [qb inventory](https://github.com/qbcore-framework/qb-inventory) or [ox_inventory](https://github.com/overextended/ox_inventory)
   
   
 - [ps-ui](https://github.com/Project-Sloth/ps-ui)
