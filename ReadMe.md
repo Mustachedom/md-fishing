@@ -22,6 +22,7 @@ Also A shout out to my beta testers!
 - [qb-target](https://github.com/qbcore-framework/qb-target) or [ox_target](https://github.com/overextended/ox_target)
 </h1>
 step 1 
+
 add these
 ```
 PlayerData.metadata['fishingrep'] = PlayerData.metadata['fishingrep'] or 0
