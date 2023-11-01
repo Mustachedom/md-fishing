@@ -62,7 +62,7 @@ fishbuyer = CreatePed(0, fishbuyer,buyerloc.x,buyerloc.y,buyerloc.z-1, 189, fals
 						type = 'client',
 						label = "Sell Fish ",
 						icon = "fas fa-eye",
-						serverEvent = 'md-fishing:server:sellfish',
+						event = 'md-fishing:server:sellfish',
 					},
 				},
 				distance = 2.0
