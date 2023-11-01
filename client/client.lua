@@ -59,6 +59,7 @@ fishbuyer = CreatePed(0, fishbuyer,buyerloc.x,buyerloc.y,buyerloc.z-1, 189, fals
 			exports['qb-target']:AddTargetEntity(fishbuyer, { -- The specified entity number
 				options = {
 					{
+						type = 'client',
 						label = "Sell Fish ",
 						icon = "fas fa-eye",
 						serverEvent = 'md-fishing:server:sellfish',
@@ -88,6 +89,7 @@ local fishchummer = "u_m_m_blane"
 			exports['qb-target']:AddTargetEntity(fishchum, { -- The specified entity number
 				options = {
 					{
+						type = 'server',
 						label = "Make Chum",
 						icon = "fas fa-eye",
 						serverEvent = 'md-fishing:server:fishchum',
@@ -121,6 +123,7 @@ else
 			exports['qb-target']:AddTargetEntity(fishseller, { -- The specified entity number
 				options = {
 					{
+						type = 'client',
 						label = "Fish Shop",
 						icon = "fas fa-eye",
 						event = 'md-fishing:client:OpenFishShop',
@@ -153,10 +156,11 @@ exports['qb-target']:AddBoxZone("magnetbreakdown",Config.MaterialBreakdown ,1.5,
 	}, {
 		options = {
 			{
+			type = 'server',
 			label = "Melt Rusty Materials",
 			icon = "fas fa-eye",
-			serverEvent = 'md-fishing:server:breakdownmagnetloot',
-		}
+			event = 'md-fishing:server:breakdownmagnetloot',
+			}
 		},
 		distance = 2.5
 	})
@@ -392,8 +396,8 @@ else
 		{
 			name = 'unlock',
 			 label = "Open Chest",
-            icon = "fas fa-eye",
-            action = function()
+           		 icon = "fas fa-eye",
+           		 action = function()
 				exports['ps-ui']:Circle(function(success)
 					if success then
 						DeleteObject(treasurechest)
@@ -435,6 +439,7 @@ else
 	exports['qb-target']:AddTargetEntity(openedchest, { -- The specified entity number
 				options = {
 					{
+						
 						label = "Loot Chest",
 						icon = "fas fa-eye",
 						action = function()
