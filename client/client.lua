@@ -63,7 +63,8 @@ fishbuyer = CreatePed(0, fishbuyer,buyerloc.x,buyerloc.y,buyerloc.z-1, 189, fals
 						icon = "fas fa-eye",
 						serverEvent = 'md-fishing:server:sellfish',
 					},
-				}
+				},
+				distance = 2.0
 			})
 		end
 local fishchummer = "u_m_m_blane"
@@ -91,7 +92,8 @@ local fishchummer = "u_m_m_blane"
 						icon = "fas fa-eye",
 						serverEvent = 'md-fishing:server:fishchum',
 					},
-				}
+				},
+				distance = 2.0
 			})
 		end
 		
@@ -123,7 +125,8 @@ else
 						icon = "fas fa-eye",
 						event = 'md-fishing:client:OpenFishShop',
 					},
-				}
+				},
+				distance = 2.0
 			})
 		end	
 end
@@ -402,7 +405,8 @@ else
 					end, 1, 8)
 				end,	
 		},
-	}
+	},
+	distance = 2.0
 })
 end
 end)
@@ -439,7 +443,8 @@ else
 								TriggerServerEvent('md-fishing:server:getchestreward')
 							end,
 					}
-				}
+				},
+				distance = 2.0
 			})
 end			
 end)
