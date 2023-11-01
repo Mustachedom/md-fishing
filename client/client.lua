@@ -92,7 +92,7 @@ local fishchummer = "u_m_m_blane"
 						type = 'server',
 						label = "Make Chum",
 						icon = "fas fa-eye",
-						serverEvent = 'md-fishing:server:fishchum',
+						event = 'md-fishing:server:fishchum',
 					},
 				},
 				distance = 2.0
