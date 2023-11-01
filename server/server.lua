@@ -81,17 +81,12 @@ RegisterNetEvent('md-fishing:server:fishchum', function()
         local item = Player.Functions.GetItemByName(v)
 
         if item and item.amount > 0 then
-            local removed = Player.Functions.RemoveItem(v, item.amount)
-            Player.Functions.AddItem("chum", item.amount)
-            chumCount = chumCount + removed
-        end
-    end
-
-    if chumCount > 0 then
-        TriggerClientEvent('QBCore:Notify', src, "You received " .. chumCount .. " chum.", "success")
-    else
-        TriggerClientEvent('QBCore:Notify', src, "You have no chum fish in your inventory.", "error")
-    end
+            if   Player.Functions.RemoveItem(v, item.amount) then
+				Player.Functions.AddItem("chum", item.amount)
+				  TriggerClientEvent('QBCore:Notify', src, "You received " .. item.amount .. " chum.", "success")
+			end
+		end
+	end
 end)
 RegisterServerEvent('md-fishing:server:giveillegalfish', function()
 	local src = source
@@ -177,16 +172,11 @@ RegisterNetEvent('md-fishing:server:sellfish', function(item)
         local item = Player.Functions.GetItemByName(Config.FishSells[i].label)
 
         if item and item.amount > 0 then
-            local removed = Player.Functions.RemoveItem(Config.FishSells[i].label, item.amount)
-            Player.Functions.AddMoney("cash", item.amount * Config.FishSells[i].price)
-            fishamount = fishamount + removed
+			if Player.Functions.RemoveItem(Config.FishSells[i].label, item.amount) then
+				Player.Functions.AddMoney("cash", item.amount * Config.FishSells[i].price)
+				TriggerClientEvent('QBCore:Notify', src, "You received " .. item.amount *  Config.FishSells[i].price .. " Bucks!", "success")
+			end	
         end
-    end
-
-    if fishamount > 0 then
-        TriggerClientEvent('QBCore:Notify', src, "You received " .. fishamount .. " Bucks!", "success")
-    else
-        TriggerClientEvent('QBCore:Notify', src, "You have nothing to Sell!", "error")
     end
 end)
 
@@ -200,15 +190,10 @@ RegisterNetEvent('md-fishing:server:breakdownmagnetloot', function()
         local item = Player.Functions.GetItemByName(v)
 
         if item and item.amount > 0 then
-            local removed = Player.Functions.RemoveItem(v, item.amount)
-            Player.Functions.AddItem(materialtype, item.amount * Config.Materialamount)
-            material = material + removed
+           if Player.Functions.RemoveItem(v, item.amount) then
+				Player.Functions.AddItem(materialtype, item.amount * Config.Materialamount)
+				TriggerClientEvent('QBCore:Notify', src, "You received " .. item.amount .. " Pieces Of " ..materialtype.. "!" , "success")
+			end
         end
-    end
-
-    if material > 0 then
-        TriggerClientEvent('QBCore:Notify', src, "You received " .. material .. " Pieces Of " ..materialtype.. "!" , "success")
-    else
-        TriggerClientEvent('QBCore:Notify', src, "You Have No Rusty Materials!", "error")
     end
 end)
