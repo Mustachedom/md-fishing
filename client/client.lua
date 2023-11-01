@@ -9,6 +9,7 @@ end
 
 CreateThread(function()
 -------------- Blips
+ModifyWater(10,20,100,5000)
 for k, v in pairs (Config.FishingZones) do 
 local blip = AddBlipForCoord(v) 
 SetBlipSprite(blip, 88)
@@ -59,14 +60,14 @@ fishbuyer = CreatePed(0, fishbuyer,buyerloc.x,buyerloc.y,buyerloc.z-1, 189, fals
 			exports['qb-target']:AddTargetEntity(fishbuyer, { -- The specified entity number
 				options = {
 					{
-						type = 'client',
+						type = 'server',
 						label = "Sell Fish ",
 						icon = "fas fa-eye",
 						event = 'md-fishing:server:sellfish',
 					},
 				},
-				distance = 2.0
-			})
+                distance = 2.0
+            })	
 		end
 local fishchummer = "u_m_m_blane"
 	lib.requestModel(fishchummer, 500)
@@ -95,8 +96,8 @@ local fishchummer = "u_m_m_blane"
 						event = 'md-fishing:server:fishchum',
 					},
 				},
-				distance = 2.0
-			})
+                distance = 2.0
+            })	
 		end
 		
 if Config.oxinv then 
@@ -129,8 +130,8 @@ else
 						event = 'md-fishing:client:OpenFishShop',
 					},
 				},
-				distance = 2.0
-			})
+                distance = 2.0
+            })	
 		end	
 end
 if Config.oxtarget then
@@ -154,16 +155,16 @@ exports['qb-target']:AddBoxZone("magnetbreakdown",Config.MaterialBreakdown ,1.5,
 		minZ = Config.MaterialBreakdown-2,
 		maxZ = Config.MaterialBreakdown+2,
 	}, {
-		options = {
-			{
-			type = 'server',
-			label = "Melt Rusty Materials",
-			icon = "fas fa-eye",
-			event = 'md-fishing:server:breakdownmagnetloot',
-			}
-		},
+			options = {
+				{
+					type = 'server',
+					label = "Melt Rusty Materials",
+					icon = "fas fa-eye",
+					event = 'md-fishing:server:breakdownmagnetloot',
+				}
+			},
 		distance = 2.5
-	})
+		})
 end		
 end)
 
@@ -396,8 +397,8 @@ else
 		{
 			name = 'unlock',
 			 label = "Open Chest",
-           		 icon = "fas fa-eye",
-           		 action = function()
+            icon = "fas fa-eye",
+            action = function()
 				exports['ps-ui']:Circle(function(success)
 					if success then
 						DeleteObject(treasurechest)
@@ -410,7 +411,7 @@ else
 				end,	
 		},
 	},
-	distance = 2.0
+	distance = 2
 })
 end
 end)
@@ -439,7 +440,6 @@ else
 	exports['qb-target']:AddTargetEntity(openedchest, { -- The specified entity number
 				options = {
 					{
-						
 						label = "Loot Chest",
 						icon = "fas fa-eye",
 						action = function()
@@ -449,7 +449,7 @@ else
 							end,
 					}
 				},
-				distance = 2.0
+				distance = 2
 			})
 end			
 end)
