@@ -1,7 +1,7 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local fishing = nil
 local magnetfishing = nil
-
+local chestspawned = nil
 --- insert police code inside function
 function PoliceCall()
 print "peepee tell your dev they didnt edit something"
@@ -367,9 +367,14 @@ RegisterNetEvent('md-fishing:client:placechest')
 AddEventHandler("md-fishing:client:placechest", function() 
 local chest = "xm_prop_x17_chest_closed"
 local chestloc = GetEntityCoords(PlayerPedId())
+if chestspawned then
+QBCore.Functions.Notify("You Have A Chest Out Already")			
+else	
+chestspawned = true			
 lib.requestModel(chest, 500)
 treasurechest = CreateObject(chest,chestloc.x,chestloc.y,chestloc.z-1, true, false)
 PlaceObjectOnGroundProperly(treasurechest)
+end			
 if Config.oxtarget then
 	options = {
         {
@@ -403,7 +408,6 @@ else
 					if success then
 						DeleteObject(treasurechest)
 						TriggerEvent('md-fishing:client:openchest')
-						exports.ox_target:removeLocalEntity(treasurechest, 'unlock')
 					else
 						QBCore.Functions.Notify("Its A Circle Not Rocket Science")
 					end
@@ -445,6 +449,7 @@ else
 						action = function()
 								DeleteObject(openedchest)
 								Wait(1000)
+								chestspawned = nil
 								TriggerServerEvent('md-fishing:server:getchestreward')
 							end,
 					}
