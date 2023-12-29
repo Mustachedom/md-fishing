@@ -9,7 +9,7 @@ end
 
 CreateThread(function()
 -------------- Blips
-ModifyWater(10,20,100,5000)
+
 for k, v in pairs (Config.FishingZones) do 
 local blip = AddBlipForCoord(v) 
 SetBlipSprite(blip, 88)
