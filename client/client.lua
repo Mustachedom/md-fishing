@@ -175,9 +175,9 @@ for k, v in pairs (Config.FishingZones) do
 	radius = 30,
     debug = false,
     inside = function()
-local fishrep = QBCore.Functions.GetPlayerData().metadata["fishingrep"]
-local magnetrep = QBCore.Functions.GetPlayerData().metadata["magnetfishingrep"]
-local illegalfish = QBCore.Functions.GetPlayerData().metadata["illegalfishing"]
+		local fishrep = QBCore.Functions.GetPlayerData().metadata["fishingrep"]
+		local magnetrep = QBCore.Functions.GetPlayerData().metadata["magnetfishingrep"]
+		local illegalfish = QBCore.Functions.GetPlayerData().metadata["illegalfishing"]
 
 			if fishing then
 				if  fishrep <= Config.tier1rep then
@@ -263,9 +263,9 @@ for k, v in pairs (Config.illegalfishingzones) do
 	radius = 250,
     debug = false,
     inside = function()
-local fishrep = QBCore.Functions.GetPlayerData().metadata["fishingrep"]
-local magnetrep = QBCore.Functions.GetPlayerData().metadata["magnetfishingrep"]
-local illegalfish = QBCore.Functions.GetPlayerData().metadata["illegalfishing"]
+		local fishrep = QBCore.Functions.GetPlayerData().metadata["fishingrep"]
+		local magnetrep = QBCore.Functions.GetPlayerData().metadata["magnetfishingrep"]
+		local illegalfish = QBCore.Functions.GetPlayerData().metadata["illegalfishing"]
 
 			if fishing then
 				if  fishrep >= Config.tier10rep then
