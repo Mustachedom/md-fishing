@@ -100,6 +100,402 @@ PlayerData.metadata['illegalfishing'] 	= PlayerData.metadata['illegalfishing']  
 ["whitebass"] 				 = {["name"] = "whitebass", 			    ["label"] = "White Bass", 		     	['weight'] = 100, 		["type"] = "item", 		["image"] = "largemouthbass.png", 			["unique"] = false, 	["useable"] = true, 	["shouldClose"] = true,		["description"] = ""},
 ["worms"] 				     = {["name"] = "worms", 			    	["label"] = "worms", 		     		['weight'] = 100, 		["type"] = "item", 		["image"] = "worm.png", 			   		["unique"] = false, 	["useable"] = true, 	["shouldClose"] = true,		["description"] = ""},
 ```
+
+OR if you use ox_inv **credits to Avenge**
+```
+['atlanticdolphin'] = {
+	label = 'Atlantic Dolphin',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A beautiful atlantic dolphin!"
+},
+
+['belugawhale'] = {
+	label = 'Beluga Whale',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "How did you catch this with only a rod?!"
+},
+
+['bluefish'] = {
+	label = 'Blue Fish',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A very blue fish"
+},
+
+['bluewhale'] = {
+	label = 'Blue Whale',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "Okay, you're joking right?"
+},
+
+['catfish'] = {
+	label = 'Cat Fish',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A perrrrrrfect looking fish"
+},
+
+['chileandolphin'] = {
+	label = 'Chileando Dolphin',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A beautiful dolphin"
+},
+
+['chum'] = {
+	label = 'Chum',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A bucket of suspicous bait"
+},
+
+['closedsafe'] = {
+	label = 'Rusted Safe',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A water bogged, rusty safe"
+},
+
+['copperpipe'] = {
+	label = 'Rusted Copper Pipe',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A corroded, rusty copper pipe"
+},
+
+['fishingpole'] = {
+	label = 'Fishing Pole',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "I can catch something with this!"
+},
+
+['flounder'] = {
+	label = 'Flounder',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A yellow-ish fish"
+},
+
+['goblinshark'] = {
+	label = 'Goblin Shark',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "Fuck me, it's ugly!"
+},
+
+['groundshark'] = {
+	label = 'Ground Shark',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "I'm sure I've seen this somewhere before"
+},
+
+['halibut'] = {
+	label = 'Halibut',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A fish when cooked correctly is delicous"
+},
+
+['largemouthbass'] = {
+	label = 'Large Mouth Bass',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A bass with a big mouth, I wounder?"
+},
+
+['leatherheadturtle'] = {
+	label = 'Leather Head Turtle',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A majestic turtle"
+},
+
+['magnet'] = {
+	label = 'Magnet',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A form of bait for certain fishing methods"
+},
+
+['narwhal'] = {
+	label = 'Narwhal',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A unicorn whale!"
+},
+
+['panfish'] = {
+	label = 'Pan fish',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A fresh-water fish"
+},
+
+['panfish'] = {
+	label = 'Pan fish',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A fresh-water fish"
+},
+
+['plugbait'] = {
+	label = 'Plug Bait',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A form of bait for certain fishing methods"
+},
+
+['reddrum'] = {
+	label = 'Red Drum',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A large, game fish"
+},
+
+['rustyak'] = {
+	label = 'Rusty Assault Rifle',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "An unusable, rusty assault rifle"
+},
+
+['rustyantenna'] = {
+	label = 'Rusty Antenna',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A rusty antenna"
+},
+
+['rustybike'] = {
+	label = 'Rusty Bike',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A rusty push bike"
+},
+
+['rustychain'] = {
+	label = 'Rusted Chain',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A rusty, corroded chain"
+},
+
+['rustyelectronickit'] = {
+	label = 'Rusty Electronic Kit',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A rusty, corroded electronic kit"
+},
+
+['rustypistol'] = {
+	label = 'Rusted Pistol',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "An unusable, rusty pistol"
+},
+
+['rustyraspberrypi'] = {
+	label = 'Rusty Raspberry Pi',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "This was once useable, that time has passed"
+},
+
+['rustyscanner'] = {
+	label = 'Rusty Scanner',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "This was once useable, that time has passed"
+},
+
+['rustyscrapmetal'] = {
+	label = 'Rusty Scrap Metal',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "Rusty assortment of metals"
+},
+
+['rustyshotgun'] = {
+	label = 'Rusty Shotgun',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "An unusable, rusty shotgun"
+},
+
+['rustysign'] = {
+	label = 'Rusty Sign',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A rusty sign post"
+},
+
+['rustytire'] = {
+	label = 'Rusty Tire',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A rusty rim and corroded tire"
+},
+
+['rustyusb'] = {
+	label = 'Rusty USB',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "Whatever was on it is long gone"
+},
+
+['rustywheelchair'] = {
+	label = 'Rusty Wheelchair',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "This would of been fun to use in a get-away"
+},
+
+['salmon'] = {
+	label = 'Salmon',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A delicous fish!"
+},
+
+['softplasticbait'] = {
+	label = 'Soft Plastic Bait',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A form of bait for certain fishing methods"
+},
+
+['spermwhale'] = {
+	label = 'Sperm Whale',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "Did you have more than one person helping?"
+},
+
+['spinnerbait'] = {
+	label = 'Spinner Bait',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A form of bait for certain fishing methods"
+},
+
+['steelhead'] = {
+	label = 'Steelhead Trout',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A beautiful cold water, rainbow trout"
+},
+
+['stripeddolphin'] = {
+	label = 'Striped Dolphin',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "Not sure you should be catching this!"
+},
+
+['tigershark'] = {
+	label = 'Tiger Shark',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "Careful! They bite!"
+},
+
+['tortoise'] = {
+	label = 'Hard Shell Tortoise',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "This creature might be 150 years old!"
+},
+
+['treasurechest'] = {
+	label = 'Tresure Chest',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "Who knows what could be inside!?"
+},
+
+['trout'] = {
+	label = 'Trout',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A beautiful fish!"
+},
+
+['tuna'] = {
+	label = 'Tuna',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A large and delicous fish, this is worth alot!"
+},
+
+['whitebass'] = {
+	label = 'White Bass',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A very sought after fish!"
+},
+
+['worm'] = {
+	label = 'Worm Bait',
+	weight = 300,
+	stack = true,
+	close = false,
+	description = "A form of bait for certain fishing methods"
+},
+```
+
 - **Preview**
 
 ![](https://cdn.discordapp.com/attachments/1164709522691076120/1185692986957385828/image.png?ex=659089a5&is=657e14a5&hm=9da0ddc074a0f4a402c29c2a827dadb57f027f222dc0e766b3dc7a6be4d4b9cf&)
