@@ -18,7 +18,7 @@ SetBlipSprite(blip, 88)
  SetBlipColour (blip, 2)
  SetBlipAsShortRange(blip, true)
  BeginTextCommandSetBlipName("STRING")
- AddTextComponentString("Риболовна зона")
+ AddTextComponentString("Fishing Zone")
  EndTextCommandSetBlipName(blip)		
 end
 local fishbuyerblip = AddBlipForCoord(Config.FishBuyer) 
@@ -37,7 +37,7 @@ SetBlipSprite(FishShop, 500)
  SetBlipColour (FishShop, 2)
  SetBlipAsShortRange(FishShop, true)
  BeginTextCommandSetBlipName("STRING")
- AddTextComponentString("Магазин за риба")
+ AddTextComponentString("Fish Market")
  EndTextCommandSetBlipName(FishShop)
  ------------------- Blips end
  local fishbuyer = "u_m_m_blane"
