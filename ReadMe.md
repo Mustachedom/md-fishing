@@ -1,14 +1,8 @@
 <h1>md-fishing</h1>
 
 
-<div align="center">
-  <a href="https://discord.gg/sAMzrB4DDx">
-  ![]([https://cdn.discordapp.com/attachments/1164709522691076120/1185687076381933668/image.png?ex=65908424&is=657e0f24&hm=027d7691e956b2b42e3a41e469d73635ecf491754f72563f4e88f7db8c7a30b1&](https://media.discordapp.net/attachments/1211798949715775538/1236870369890009138/MusctacheScripts_md-fishing.gif?ex=663a3d8c&is=6638ec0c&hm=29be5a2cea4065e5dfb8825943427c9cb4febfda579e052c4474887d7af37325&=))
-  </a><br>
-  <a href="https://discord.gg/sAMzrB4DDx">Mustache Scripts Discord</a><br>
-</div>
 
-
+![]([https://cdn.discordapp.com/attachments/1164709522691076120/1185687076381933668/image.png?ex=65908424&is=657e0f24&hm=027d7691e956b2b42e3a41e469d73635ecf491754f72563f4e88f7db8c7a30b1&](https://media.discordapp.net/attachments/1211798949715775538/1236871144263647262/MusctacheScripts_md-fishing-cfx_forum_size.gif?ex=663a3e44&is=6638ecc4&hm=5c0b1340140c11c6adf615f840875a55c965211f3ad2838580a5ba6bc329a412&=))
 <h1>Credits to</h1>
 
 Big thanks to Bostra from [Bostra Development](https://discord.gg/K8gbPAgJ47) for preventing me from giving up multiple times. 
