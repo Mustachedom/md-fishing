@@ -3,7 +3,7 @@
 
 <div align="center">
   <a href="https://discord.gg/sAMzrB4DDx">
-    <img align="center" src="https://cdn.discordapp.com/attachments/1164709522691076120/1185676859363557457/Discord_logo.svg.png?ex=65907aa0&is=657e05a0&hm=dd2a8924c3a3d84507747ab2bac036e5fc219c697e084c9aa13ba468ff725bde&" width="100">
+    <img align="center" src="[https://cdn.discordapp.com/attachments/1164709522691076120/1185676859363557457/Discord_logo.svg.png?ex=65907aa0&is=657e05a0&hm=dd2a8924c3a3d84507747ab2bac036e5fc219c697e084c9aa13ba468ff725bde&](https://media.discordapp.net/attachments/1211798949715775538/1237026308815323166/SPOILER_md-drugs.png?ex=663a2606&is=6638d486&hm=04e4ac332e7f45e5d69e385d039c1150f9e26cfbb4f1abf22a7efae6b2aec281&=&format=webp&quality=lossless&width=1202&height=676)" width="100">
   </a><br>
   <a href="https://discord.gg/sAMzrB4DDx">Mustache Scripts Discord</a><br>
 </div>
