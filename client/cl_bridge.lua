@@ -117,6 +117,34 @@ function PoliceCall(chance)
 				}, {GetEntityCoords(PlayerPedId())}, "police", 3000, 11, 5 )
 		elseif dispatch == 'aty' then 
 			exports["aty_dispatch"]:SendDispatch('Poaching', '420-69', 40, {'police'})
+  elseif dispatch == 'qs' then
+     local img = exports['qs-dispatch']:getSSURL(function(image)
+    -- Other code using image variable
+     end)
+     TriggerServerEvent('qs-dispatch:server:CreateDispatchCall', {
+    job = { 'police', 'sheriff', 'traffic', 'patrol' },
+    callLocation = GetEntityCoords(PlayerPedId()),
+    callCode = { code = 'Poaching', snippet = '10-69' },
+    message = "Poaching In Progress",
+    flashes = false, -- you can set to true if you need call flashing sirens...
+    image = img, -- Url for image to attach to the call 
+    --you can use the getSSURL export to get this url
+    blip = {
+        sprite = 488, --blip sprite
+        scale = 1.5, -- blip scale
+        colour = 1, -- blio colour
+        flashes = true, -- blip flashes
+        text = 'Poaching', -- blip text
+        time = (20 * 1000), --blip fadeout time (1 * 60000) = 1 minute
+    },
+    otherData = {
+-- optional if you dont need this you can remove it and remember remove the `,` after blip end and this block
+       {
+           text = 'Red Obscure', -- text of the other data item (can add more than one)
+           icon = 'fas fa-user-secret', -- icon font awesome https://fontawesome.com/icons/
+       }
+     }
+     })
 		else
 			print('Congrats, You Choose 0 of the options :)')	
 		end
