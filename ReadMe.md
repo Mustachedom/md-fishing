@@ -494,7 +494,7 @@ OR if you use ox_inv **credits to Avenge**
 
 - **Preview**
 
-![](https://cdn.discordapp.com/attachments/1164709522691076120/1185692986957385828/image.png?ex=659089a5&is=657e14a5&hm=9da0ddc074a0f4a402c29c2a827dadb57f027f222dc0e766b3dc7a6be4d4b9cf&)
+![](https://www.youtube.com/watch?v=07dFZMks5e8)
 
 **step 3**
 
