@@ -3,7 +3,7 @@
 
 - **Preview**
   
-- [Rottenberger Video](https://cdn.discordapp.com/attachments/1164709522691076120/1185687076381933668/image.png?ex=65908424&is=657e0f24&hm=027d7691e956b2b42e3a41e469d73635ecf491754f72563f4e88f7db8c7a30b1&)
+- [Rottenberger Video](https://www.youtube.com/watch?v=07dFZMks5e8)
 
 <h1>Credits to</h1>
 BIG THANKS TO 
