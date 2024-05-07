@@ -6,7 +6,7 @@
 <h1>Credits to</h1>
 BIG THANKS TO 
 
-- [Bostra](https://github.com/qbcore-framework/qb-core)
+- [Bostra](https://www.merriam-webster.com/dictionary/beautiful)
 
 Special shoutout to my beta testers! Your feedback has been invaluable.
 
