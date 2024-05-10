@@ -179,8 +179,8 @@ RegisterNetEvent("md-fishing:client:fishing", function()  --- reg fishing creati
 			count = count + 1
 		end
 	end
-	if count == 0 then Notify('No Bait', 'error') return end
-	if fishing then 
+	
+	if fishing or count == 0 then 
 		Notify("You Put Your Pole Away", 'success')
 		DetachEntity(fishing, true, true)
 		DeleteObject(fishing)
@@ -224,8 +224,7 @@ end)
 RegisterNetEvent("md-fishing:client:illegalfishing", function() 
 	if tooweak then Notify('You Arent Strong Enough For This Yet', 'error') return end
 	if not inillfish then Notify('You Cant Fish Here', 'error') return end
-	if not QBCore.Functions.HasItem('chum') then Notify('No Chum', 'error') return end
-	if illfish then 
+	if illfish or not QBCore.Functions.HasItem('chum') then 
 		Notify("You Put Your Pole Away", 'success')
 		DetachEntity(illfish, true, true)
 		DeleteObject(illfish)
@@ -269,8 +268,8 @@ end)
 RegisterNetEvent("md-fishing:client:magnetfishing")
 AddEventHandler("md-fishing:client:magnetfishing", function() 
 	if not infish then Notify('You Cant Fish Here', 'error') return end
-	if not QBCore.Functions.HasItem('magnet') then Notify('No magnets', 'error') return end
-	if magnetfishing then 
+	
+	if magnetfishing or not QBCore.Functions.HasItem('magnet') then 
 		Notify("You Put Your Pole Away", 'success')
 		DetachEntity(magnetfishing, true, true)
 		DeleteObject(magnetfishing)
