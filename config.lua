@@ -16,7 +16,7 @@ Config.StarIllLvl = 5 -- level required of regular fishing to be allowed to star
 ---------------------------------- BRIDGE 
 Config.Notify = 'ox' -- qb or ox (okok is experimental)
 Config.progressbartype = 'qb' -- qb or oxbar or oxcir
-Config.minigametype = 'ox' -- qb or ox
+Config.minigametype = 'ox' -- ps or ox
 Config.Dispatch = 'ps' -- ps or cd or core or aty
 Config.FreezePlayerWhileFishing = true -- keeps players from moving while fishing 
 
