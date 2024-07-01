@@ -210,7 +210,7 @@ end
 function GetImage(img)
 	if GetResourceState('ox_inventory') == 'started' then
 		local Items = exports['ox_inventory']:Items()
-		if Items[img]['client']['image'] == nil then 
+		if Items[img]['client'] == nil then 
 			return Items[img]
 		else
 			return Items[img]['client']['image']
