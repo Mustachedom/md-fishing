@@ -233,7 +233,7 @@ end
 function GetLabel(label)
 	if GetResourceState('ox_inventory') == 'started' then
 		local Items = exports['ox_inventory']:Items()
-		return Items[img]['label']
+		return Items[label]['label']
 	else
 		return QBCore.Shared.Items[label].label
 	end
