@@ -53,8 +53,8 @@ CreateThread(function()
 	local Shop = {}
 	for k, v in pairs (Config.Items) do 
 		Shop[#Shop + 1] = {
-			   icon = "nui://"..Config.imagelink..QBCore.Shared.Items[k].image,
-				title = QBCore.Shared.Items[k].label,
+			   icon = GetImage(k),
+				title = GetLabel(k),
 				description = '$'..v.price,
 				event = "md-fishing:client:shopamounts",
 				args = {
@@ -79,8 +79,8 @@ CreateThread(function()
 	local Loot = {}
 	for k, v in pairs (Config.MagnetFishing) do 
 		Loot[#Loot + 1] = {
-			   icon = "nui://"..Config.imagelink..QBCore.Shared.Items[v].image,
-				title = QBCore.Shared.Items[v].label,
+			   icon = GetImage(v),
+				title = GetLabel(v),
 				serverEvent = 'md-fishing:server:breakdownmagnetloot',
 				args = {
 					item = v
@@ -120,8 +120,8 @@ RegisterNetEvent("md-fishing:client:sellfish", function(data)
 	for k, v in pairs (Config.FishSells) do 
 	   if QBCore.Functions.HasItem(k) then
 		sales[#sales + 1] = {
-			   icon = "nui://"..Config.imagelink..QBCore.Shared.Items[k].image,
-				title = QBCore.Shared.Items[k].label,
+			   icon = GetImage(k),
+				title = GetLabel(k),
 				description = '$'..v.price,
 				serverEvent = "md-fishing:server:sellfish",
 				args = {
