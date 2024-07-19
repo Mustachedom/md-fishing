@@ -491,10 +491,6 @@ OR if you use ox_inv **credits to Avenge**
 },
 ```
 
-- **Preview**
-
-![](https://www.youtube.com/watch?v=07dFZMks5e8)
-
 **step 3**
 
 - Modify `md-fishing/config.lua` to match your city.
@@ -505,3 +501,19 @@ run the sql file
 
 **step 5** 
 add fishsplash.ogg to interact-sound if you dont it just wont make a sound
+
+<h1>Fivemerr</h1>
+This is NOT a requirement but something I personally use and believe in.
+
+
+- to integrate with fivemerr make sure you have  ```set fivemerrLogs "API_KEY"```   in your server.cfg
+   
+- Head to /server/bridge.lua and line 3 turn local logs = true
+  
+- profit
+
+Why integrate with Fivemerr? Its a great place to store logs as it doesnt rely on discord webhooks and its far easier to search through
+
+As well as a place to offload images and videos from fivem that doesnt rely on discord since discord API will be automatically deleting images and videos after a certain amount of time If you need an invite to their server look below
+- [Fivemerr Discord](https://discord.com/invite/fivemerr)
+- [Fivemerr Docs](https://docs.fivemerr.com/)
