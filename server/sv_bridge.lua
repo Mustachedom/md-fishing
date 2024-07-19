@@ -1,5 +1,47 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local notify = Config.Notify -- qb or ox
+local logs = true 
+local logapi = GetConvar("fivemerrLogs", "")
+local endpoint = 'https://api.fivemerr.com/v1/logs'
+local headers = {
+            ['Authorization'] = logapi,
+            ['Content-Type'] = 'application/json',
+    }
+
+CreateThread(function()
+if logs then 
+    print'^2 Logs Enabled for md-fishing'
+    if logapi == 'insert string here' then 
+        print'^1 homie you gotta set your api on line 4'
+    else
+        print'^2 API Key Looks Good, Dont Trust Me Though, Im Not Smart'
+    end
+else
+    print'^1 logs disabled for md-drugs'
+end
+end)
+function Log(message, type)
+if logs == false then return end	
+    local buffer = {
+        level = "info",
+        message = message,
+        resource = GetCurrentResourceName(),
+        metadata = {
+            fishing = type,
+            playerid = source
+        }
+    }
+     SetTimeout(500, function()
+         PerformHttpRequest(endpoint, function(status, _, _, response)
+             if status ~= 200 then 
+                 if type(response) == 'string' then
+                     response = json.decode(response) or response
+                 end
+             end
+         end, 'POST', json.encode(buffer), headers)
+         buffer = nil
+     end)
+end
 
 function Notifys(text, type)
     if notify == 'qb' then
@@ -53,7 +95,7 @@ function AddItem(item, amount)
     end
 end
 
-QBCore.Functions.CreateCallback('md-drugs:server:GetCoppers', function(source, cb, args)
+lib.callback.register('md-fishing:server:GetCoppers', function(source, cb, args)
     local amount = 0
     local players = QBCore.Functions.GetQBPlayers()
     for k, v in pairs(players) do
@@ -61,41 +103,9 @@ QBCore.Functions.CreateCallback('md-drugs:server:GetCoppers', function(source, c
           amount = amount + 1
          end
     end
-    cb(amount)
+    return amount
 end)
 
-
-CreateThread(function()
-   
-    if (GetCurrentResourceName() ~= 'md-fishing') then
-        print('^1 >:( I guess it isnt a cool enough name for you')
-    end
-    if GetResourceState('qb-inventory'):find("start") then
-         if Config.imagelink ~= 'qb-inventory/html/images/' then
-             print'^1 Line 13 of your config is wrong change it to qb-inventory/html/images/'
-         end
-    
-    elseif GetResourceState('ps-inventory'):find("start") then
-        if Config.imagelink ~= 'ps-inventory/html/images/' then
-            print'^1 Line 13 of your config is wrong change it to ps-inventory/html/images/'
-        end
-    elseif GetResourceState('lj-inventory'):find("start") then
-        if Config.imagelink ~= 'lj-inventory/html/images/' then
-            print' ^1 Line 13 of your config is wrong change it to ps-inventory/html/images/'
-        end
-    elseif GetResourceState('ox_inventory'):find("start") then
-        if Config.imagelink ~= 'ox_inventory/web/images/' then
-            print'^1  Line 13 of your config is wrong'
-        end
-    else
-    end
-    if not GetResourceState('ox_lib'):find("start") then 
-       print('^1 ox_lib Is A Depndancy, Not An Optional ')
-    end
-    if Config.minigametype == 'ps' and not GetResourceState('ps-ui'):find("start") then
-        print('^1 You Have Config.minigametype as ps but dont have ps-ui started')
-    end
-end)
 CreateThread(function()
     local url = "https://raw.githubusercontent.com/Mustachedom/md-fishing/main/version.txt"
     local version = GetResourceMetadata('md-fishing', "version" )
