@@ -31,7 +31,7 @@ CreateThread(function()
 	----------------- PED CREATION/STORE
 	lib.requestModel("u_m_m_blane", 15000)
 	local fishbuyer = CreatePed(0, "u_m_m_blane",Config.FishBuyer.x,Config.FishBuyer.y,Config.FishBuyer.z-1, Config.FishBuyer.w, false, false)
-    FreezeEntityPosition(fishbuyer, true) SetEntityInvincible(fishbuyer, true)
+    Freeze(fishbuyer, true,Config.FishBuyer.w)
 	local options = {{    label = "Sell Fish",    icon = "fas fa-eye",   event = "md-fishing:client:sellfish" }}
 	local optionsqb = {{    label = "Sell Fish",    icon = "fas fa-eye", event = "md-fishing:client:sellfish" }}
 		if Config.oxtarget then	 
@@ -41,7 +41,7 @@ CreateThread(function()
 		end
 	-------------------------------------------------------------------- illegal chummer
 	local fishchum = CreatePed(0, "u_m_m_blane",Config.ChumLoc.x,Config.ChumLoc.y,Config.ChumLoc.z-1, Config.ChumLoc.w, false, false)
-    FreezeEntityPosition(fishchum, true) SetEntityInvincible(fishchum, true)
+    Freeze(fishchum, true,Config.ChumLoc.w )
 	local options2 = { {label = "Make Fish Chum",icon = "fas fa-eye", serverEvent = 'md-fishing:server:fishchum', },}
 	local options2qb = { {label = "Make Fish Chum",icon = "fas fa-eye", type = 'server', event = 'md-fishing:server:fishchum', },}
 		if Config.oxtarget then	  
@@ -67,7 +67,7 @@ CreateThread(function()
 	end
 	---------------------------------------------------------------------- Shop Ped
 	local fishstore = CreatePed(0, "u_m_m_blane",Config.ShopLoc.x,Config.ShopLoc.y,Config.ShopLoc.z-1, Config.ShopLoc.w, false, false)
-	SetEntityInvincible(fishstore, true) FreezeEntityPosition(fishstore, true)
+	Freeze(fishstore, true, Config.ShopLoc.w)
 	local options3 = {{    label = "Open Shop",    icon = "fas fa-eye", action = function() lib.showContext('fishshop') end},}
 	local options3ox = {{    label = "Open Shop",    icon = "fas fa-eye", onSelect = function() lib.showContext('fishshop') end},}
 		if Config.oxtarget then	
@@ -152,7 +152,7 @@ CreateThread(function() --- zone creation necessary to get the globals to allow/
 		if v.enabled then
 			illegalsphere = lib.zones.sphere({ coords = v.loc, radius = v.radius, debug = v.debug,
 				onEnter = function()
-					QBCore.Functions.TriggerCallback('md-fishing:server:GetLevels', function(fish, ill, mag)
+					local fish, ill, mag = lib.callback.await('md-fishing:server:GetLevels', false)
 						if fish >= Config.StarIllLvl then
 							inillfish = true
 							tooweak = false
@@ -162,7 +162,6 @@ CreateThread(function() --- zone creation necessary to get the globals to allow/
 							tooweak = true
 							Notify('You Must Be Level ' .. Config.StarIllLvl .. ' In Fishing To Fish Here', 'error')
 						end
-					end)
 				end,
 				onExit = function()	inillfish = false end
 			})
@@ -196,28 +195,27 @@ RegisterNetEvent("md-fishing:client:fishing", function()  --- reg fishing creati
 		AttachEntityToEntity(object, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
 		fishing = object
 		if Config.FreezePlayerWhileFishing then FreezeEntityPosition(PlayerPedId(), true) end
-		QBCore.Functions.TriggerCallback('md-fishing:server:GetLevels', function(fish)
-			if Config.AutoRecast then 
-				repeat
-					Wait(Config.Levels[fish]['time'] * 1000)
-					if fishing == false then return end
-					found()
-					if  minigame(2,10) then TriggerServerEvent('md-fishing:server:givefish', GetEntityCoords(PlayerPedId())) end
-				until fishing == false
-			else
+		local fish, ill, mag = lib.callback.await('md-fishing:server:GetLevels', false)
+		if Config.AutoRecast then 
+			repeat
 				Wait(Config.Levels[fish]['time'] * 1000)
-				if not fishing then return end
+				if fishing == false then return end
 				found()
-				if not minigame(2,10) then return end
-				TriggerServerEvent('md-fishing:server:givefish')
-				if fishing then 
-					DetachEntity(fishing, true, true)
-					DeleteObject(fishing)
-					ClearPedTasks(PlayerPedId())
-					fishing = false
-				end
+				if  minigame(2,10) then TriggerServerEvent('md-fishing:server:givefish', GetEntityCoords(PlayerPedId())) end
+			until fishing == false
+		else
+			Wait(Config.Levels[fish]['time'] * 1000)
+			if not fishing then return end
+			found()
+			if not minigame(2,10) then return end
+			TriggerServerEvent('md-fishing:server:givefish')
+			if fishing then 
+				DetachEntity(fishing, true, true)
+				DeleteObject(fishing)
+				ClearPedTasks(PlayerPedId())
+				fishing = false
 			end
-		end)
+		end
 	end	
 end)
 
@@ -240,28 +238,28 @@ RegisterNetEvent("md-fishing:client:illegalfishing", function()
 		AttachEntityToEntity(object, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
 		illfish = object
 		if Config.FreezePlayerWhileFishing then FreezeEntityPosition(PlayerPedId(), true) end
-		QBCore.Functions.TriggerCallback('md-fishing:server:GetLevels', function(fish, ill, mag)
-			if Config.AutoRecast then 
-				repeat
-					Wait(Config.Levels[ill]['time'] * 1000)
-					if illfish == false then return end
-					found()
-					if  minigame(2,10) then TriggerServerEvent('md-fishing:server:giveillegalfish') end
-					PoliceCall(Config.PoliceChance)
-				until illfish == false
-			else
+		local fish, ill, mag = lib.callback.await('md-fishing:server:GetLevels', false)
+		
+		if Config.AutoRecast then 
+			repeat
 				Wait(Config.Levels[ill]['time'] * 1000)
-				if not illfish then return end
+				if illfish == false then return end
 				found()
-				if minigame(2,10) then TriggerServerEvent('md-fishing:server:giveillegalfish') PoliceCall(Config.PoliceChance) end
-				if illfish then 
-					DetachEntity(illfish, true, true)
-					DeleteObject(illfish)
-					illfish = false
-					ClearPedTasks(PlayerPedId())
-				end	
-			end
-		end)
+				if  minigame(2,10) then TriggerServerEvent('md-fishing:server:giveillegalfish') end
+				PoliceCall(Config.PoliceChance)
+			until illfish == false
+		else
+			Wait(Config.Levels[ill]['time'] * 1000)
+			if not illfish then return end
+			found()
+			if minigame(2,10) then TriggerServerEvent('md-fishing:server:giveillegalfish') PoliceCall(Config.PoliceChance) end
+			if illfish then 
+				DetachEntity(illfish, true, true)
+				DeleteObject(illfish)
+				illfish = false
+				ClearPedTasks(PlayerPedId())
+			end	
+		end
 	end	
 end)
 
@@ -285,7 +283,7 @@ AddEventHandler("md-fishing:client:magnetfishing", function()
 		AttachEntityToEntity(object, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
 		magnetfishing = object
 		if Config.FreezePlayerWhileFishing then FreezeEntityPosition(PlayerPedId(), true) end
-		QBCore.Functions.TriggerCallback('md-fishing:server:GetLevels', function(fish,ill, mag)
+			local fish, ill, mag = lib.callback.await('md-fishing:server:GetLevels', false)
 			if Config.AutoRecast then 
 				repeat
 					Wait(Config.Levels[mag]['time'] * 1000)
@@ -305,7 +303,6 @@ AddEventHandler("md-fishing:client:magnetfishing", function()
 					ClearPedTasks(PlayerPedId())
 				end
 			end
-		end)
 	end	
 end)
 
@@ -339,7 +336,7 @@ AddEventHandler("md-fishing:client:placechest", function()
 end)
 --------- commands
 RegisterCommand('fishingrep', function()
-	QBCore.Functions.TriggerCallback('md-fishing:server:LevelMenu', function(data)
+	local data = lib.callback.await('md-fishing:server:LevelMenu', false)
 	lib.registerContext({
 		id = 'fishlvls',
 		title = 'Fishing Levels',
@@ -350,7 +347,6 @@ RegisterCommand('fishingrep', function()
 		}
 	  })
 	  lib.showContext('fishlvls')
-	end)
 end,false)
 
 RegisterCommand('anchor', function()
