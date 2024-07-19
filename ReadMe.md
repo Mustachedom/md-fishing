@@ -492,11 +492,7 @@ OR if you use ox_inv **credits to Avenge**
 
 - Modify `md-fishing/config.lua` to match your city.
 
-
-**Step 4** 
-run the sql file
-
-**step 5** 
+**step 4** 
 add fishsplash.ogg to interact-sound if you dont it just wont make a sound
 
 <h1>Fivemerr</h1>
