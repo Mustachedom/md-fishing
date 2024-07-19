@@ -1,8 +1,5 @@
 <h1>md-fishing</h1>
 
-
-- **Preview**
-  
 - [Rottenberger Video](https://www.youtube.com/watch?v=07dFZMks5e8)
 
 <h1>Credits to</h1>
