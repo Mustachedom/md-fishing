@@ -1,6 +1,5 @@
 Config = {}
 
-Config.oxtarget = false -- true if you use ox target
 Config.PoliceChance = 20 -- needs to be 1-99 
 Config.MaterialBreakdown = vector3(1087.63, -2001.71, 30.88) -- where you break down rusty materials for materials
 Config.FishBuyer = vector4(-1814.64, -1194.00, 13.02, 238.98) -- where you sell your fish
@@ -10,121 +9,88 @@ Config.AutoRecast = true -- if false players will have to reclick their pole for
 Config.TreasureChestObject = true -- this will put a chest on the ground people can third eye. if false it will run the event as a usuable item and not put a chest on the ground
 Config.TreasureChestchance = 20 -- must be 1-100 chance to get a treasure chest while fishing
 Config.LevelUpAmount = 60 -- amount of fish required to level up
-Config.imagelink = 'qb-inventory/html/images/'
 Config.StarIllLvl = 5 -- level required of regular fishing to be allowed to start illegal fishing
 
 ---------------------------------- BRIDGE 
+Config.Minigames = {
+    ps_circle =     {amount = 2,     speed = 8,},
+    ps_maze =       {timelimit = 15},
+    ps_scrambler =  {type = 'numeric', time = 15, mirrored = 0},
+    ps_var =        {numBlocks = 5, time = 10},
+    ps_thermite =   {time = 10, gridsize = 5, incorrect = 3},
+    ox =            {'easy', 'easy'},   --easy medium or hard each one corresponds to how many skillchecks and the difficulty
+    blcirprog =     {amount = 2,     speed = 50},       -- speed = 1-100
+    blprog =        {amount = 1,     speed = 50},       -- speed = 1-100
+    blkeyspam =     {amount = 1,     difficulty = 50}, -- difficulty = 1-100
+    blkeycircle =   {amount = 1,     difficulty = 50, keynumbers = 3},
+    blnumberslide = {amount = 1,     difficulty = 50, keynumbers = 3},
+    blrapidlines =  {amount = 1,     difficulty = 50, numberofline = 3},
+    blcircleshake = {amount = 1,     difficulty = 50, stages = 3},
+    glpath =        {gridSize = 19,  lives = 3,     timelimit = 10000},
+    glspot =        {gridSize = 6, timeLimit = 999999, charSet = "alphabet", required = 10},
+    glmath =        {timeLimit = 300000},
+}
+
+Config.minigametype = 'ox' -- look above for options or choose none if you dont want any minigames 
 Config.Notify = 'ox' -- qb or ox (okok is experimental)
 Config.progressbartype = 'qb' -- qb or oxbar or oxcir
 Config.minigametype = 'ox' -- ps or ox
 Config.Dispatch = 'ps' -- ps or cd or core or aty
 Config.FreezePlayerWhileFishing = true -- keeps players from moving while fishing 
+Config.Target = 'ox'
 
 Config.FishingZones = { -- these locations will have blips and can do legal and magnet fishing
-    {loc = vector3(-1849.2, -1230.44, 13.02), radius = 30, debug = false, enabled = true },
-    {loc = vector3(-3427.21, 967.53, 8.35),   radius = 30, debug = false, enabled = true },
-    {loc = vector3(1313.22, 4229.9, 33.92),   radius = 30, debug = false, enabled = true },
-    {loc = vector3(40.83, 848.72, 197.73),    radius = 30, debug = false, enabled = true },
+    {loc = vector3(-1849.2, -1230.44, 13.02), radius = 30, debug = true, enabled = true },
+    {loc = vector3(-3427.21, 967.53, 8.35),   radius = 30, debug = true, enabled = true },
+    {loc = vector3(1313.22, 4229.9, 33.92),   radius = 30, debug = true, enabled = true },
+    {loc = vector3(40.83, 848.72, 197.73),    radius = 30, debug = true, enabled = true },
 }
  Config.Blips = {
     {loc =  vector3(-1849.2, -1230.44, 13.02),  sprite = 88, scale = 0.55, color = 2, label = 'Fishing Zone', enabled = true},
     {loc =  vector3(-3427.21, 967.53, 8.35),    sprite = 88, scale = 0.55, color = 2, label = 'Fishing Zone', enabled = true},
     {loc =  vector3(1313.22, 4229.9, 33.92),    sprite = 88, scale = 0.55, color = 2, label = 'Fishing Zone', enabled = true},
     {loc =  vector3(40.83, 848.72, 197.73),     sprite = 88, scale = 0.55, color = 2, label = 'Fishing Zone', enabled = true},
-    {loc =  vector3(-1808.63, -1176.74, 13.02), sprite = 500, scale = 0.55, color = 2, label = 'Fish Buyer', enabled = true},
-    {loc =  vector3(1314.75, 4281.75, 33.91),   sprite = 500, scale = 0.55, color = 2, label = 'Fishing Store', enabled = true},
+    {loc =  Config.FishBuyer,                   sprite = 500, scale = 0.55, color = 2, label = 'Fish Buyer',   enabled = true},
+    {loc =  Config.ShopLoc,                     sprite = 500, scale = 0.55, color = 2, label = 'Fishing Store',enabled = true},
 
  }
+
  Config.illegalfishingzones = { -- these will have no blips and will only work with illegal fishing
     {loc =  vector3(1788.64, -3525.29, 0.54), radius = 250, debug = false, enabled = true },
     {loc =  vector3(3190.5, -974.99, 0.37),   radius = 250, debug = false, enabled = true },
     {loc =  vector3(1235.08, 7926.63, -1.26), radius = 250, debug = false, enabled = true },
     {loc =  vector3(-3196.07, 2601.24, 1.33), radius = 250, debug = false, enabled = true },
 }
- 
- Config.spinnerfishies = { -- loot from spinners bait
- "largemouthbass",
- "panfish",
- "trout",
+
+Config.bait = {
+    spinnerfishies = {"largemouthbass", "panfish", "trout",},
+    softplasticbaitfishies = {"catfish", "whitebass", "salmon",},
+    plugbaitfishies = {"steelhead", "bluefish", "halibut",},
+    wormsfishies = {"flounder", "reddrum", "tunafish",},
+    MagnetFishing = {"rustyak", "rustypistol", "rustyshotgun", "rustybike", "rustysafe", "copperpipe", 
+        "closedsafe", "sheetmetal", "rustysign", "rustytire", "rustywheelchair", "rustychain", "rustyantenna", "rustyelectronickit", "rustyscanner",
+        "rustyraspberrypi", "rustyusb", "rustyscrapmetal",
+    },
+    IllegalFish = {"tigershark", "groundshark", "goblinshark", "stripeddolphin", "chileandolphin", "atlanticdolphin", "belugawhale", "bluewhale", 
+        "narwhal", "spermwhale", "seaturtle", "tortoise", "leatherheadturtle",
+    },
 }
- 
-Config.softplasticbaitfishies = { -- loot from soft plastic bait
- "catfish",
- "whitebass",
- "salmon",
-}
-Config.plugbaitfishies = { -- loot from plug bait
- "steelhead",
- "bluefish",
- "halibut",
-}
-Config.wormsfishies = { -- loot from worms
- "flounder",
- "reddrum",
- "tunafish",
-}
- 
- 
- 
+
  Config.ChumFish = { -- these will be broken down to make illegal fish bait "chum"
   "flounder",
- "reddrum",
- "tunafish",
+  "reddrum",
+  "tunafish",
   "steelhead",
- "bluefish",
- "halibut",
+  "bluefish",
+  "halibut",
   "catfish",
- "whitebass",
- "salmon",
+  "whitebass",
+  "salmon",
   "largemouthbass",
- "panfish",
- "trout",
+  "panfish",
+  "trout",
 }
- 
-Config.IllegalFish = { -- the loot pool for illegal fishing using chum uses same pole as reg fishing
- "tigershark",
- "groundshark",
- "goblinshark", 		
- "stripeddolphin", 			
- "chileandolphin", 			
- "atlanticdolphin", 			
- "belugawhale",			
- "bluewhale", 			
- "narwhal", 			
- "spermwhale", 			
- "seaturtle", 	
- "tortoise", 			
- "leatherheadturtle", 			
-}
- 
-Config.MagnetFishing = { -- loot from magnet fishing
- "rustyak",
- "rustypistol",
- "rustyshotgun", 		
- "rustybike", 			
- "rustysafe", 			
- "copperpipe", 			
- "closedsafe",			
- "sheetmetal", 			
- "rustysign", 			
- "rustytire", 			
- "rustywheelchair", 	
- "rustychain", 			
- "rustyantenna", 		
- "rustyelectronickit", 	
- "rustyscanner", 		
- "rustyraspberrypi", 	
- "rustyusb", 			
- "rustyscrapmetal", 	
-}
- 
- Config.Materials = { -- reward material for magnetfishing
-    {item = "metalscrap",   min = 1, max = 5},
-    {item = "iron",         min = 1, max = 5},
-    {item = "copper",       min = 1, max = 5},
-    {item = "steel",        min = 1, max = 5},
-    {item = "aluminum",     min = 1, max = 5},
-} 
+
 Config.Materialamount = 5 -- how many materials per item
 Config.Levels = { -- in seconds how long it takes to catch 1 fish by your level.
     [0] =  {time = 55},
@@ -140,50 +106,8 @@ Config.Levels = { -- in seconds how long it takes to catch 1 fish by your level.
     [10] = {time = 5},
 }
 
---------------------------- fish shop 
-Config.Items = { -- this is what is inside the shops 
-    ["fishingpole"]     = { price = 1000, amount = 1},
-    ["worms"]           = { price = 25, amount = 50},
-	["spinnerbait"]     = { price = 25, amount = 50},
-	["softplasticbait"] = { price = 25, amount = 50},
-	["plugbait"]        = { price = 25, amount = 50},
-	["magnet"]          = { price = 25, amount = 50},
-	["magnetpole"]      = { price = 10, amount = 1},
-    ["illegalpole"]     = { price = 10000, amount = 1},
-}
-
 Config.TreasureChest = { -- random loot you get from treasure chests
      {item = 'lockpick', min = 1, max = 3},
      { item = 'goldbar',min = 1, max = 3},
      { item = 'repairkit', min = 1, max = 3},
-}
-
-
-Config.FishSells = { -- how much each fish will sell for
-    ['flounder']          = {price = 50},
-    ['reddrum']           = {price = 50},
-    ['tunafish']          = {price = 50},
-    ['bluefish']          = {price = 50},
-    ['halibut']           = {price = 50},
-    ['steelhead']         = {price = 50},
-    ['catfish']           = {price = 50},
-    ['whitebass']         = {price = 50},
-    ['salmon']            = {price = 50},
-    ['panfish']           = {price = 50},
-    ['trout']             = {price = 50},
-    ['tigershark']        = {price = 50},
-    ['groundshark']       = {price = 50},
-    ['goblinshark']       = {price = 50},
-    ['stripeddolphin']    = {price = 50},
-    ['largemouthbass']    = {price = 50},
-    ['chileandolphin']    = {price = 50},
-    ['atlanticdolphin']   = {price = 50},
-    ['belugawhale']       = {price = 50},
-    ['bluewhale']         = {price = 50},
-    ['narwhal']           = {price = 50},
-    ['spermwhale']        = {price = 50},
-    ['seaturtle']         = {price = 50},
-    ['tortoise']          = {price = 50},
-    ['leatherheadturtle'] = {price = 50},
-
 }

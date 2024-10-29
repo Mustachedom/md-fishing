@@ -18,8 +18,10 @@ local function found()
 	Wait(500)
 	FreezeEntityPosition(PlayerPedId(), false)
 end
+
 CreateThread(function()
-	------------------ Blip Creation
+	lib.requestModel("prop_fishing_rod_01", 1000)
+	lib.requestAnimDict('amb@world_human_stand_fishing@idle_a', 1000)
 	for k, v in pairs (Config.Blips) do 
 		if v.enabled then
 			local blip = AddBlipForCoord(v.loc.x, v.loc.y, v.loc.z) 
@@ -27,124 +29,26 @@ CreateThread(function()
 			SetBlipAsShortRange(blip,true) BeginTextCommandSetBlipName("STRING") AddTextComponentString(v.label) EndTextCommandSetBlipName(blip)		
 		end
 	end
-	----------------- END BLIPS
 	----------------- PED CREATION/STORE
 	lib.requestModel("u_m_m_blane", 15000)
 	local fishbuyer = CreatePed(0, "u_m_m_blane",Config.FishBuyer.x,Config.FishBuyer.y,Config.FishBuyer.z-1, Config.FishBuyer.w, false, false)
-    Freeze(fishbuyer, true,Config.FishBuyer.w)
-	local options = {{    label = "Sell Fish",    icon = "fas fa-eye",   event = "md-fishing:client:sellfish" }}
-	local optionsqb = {{    label = "Sell Fish",    icon = "fas fa-eye", event = "md-fishing:client:sellfish" }}
-		if Config.oxtarget then	 
-			exports.ox_target:addLocalEntity(fishbuyer, options)	
-		else
-			exports['qb-target']:AddTargetEntity(fishbuyer, { options = optionsqb, distance = 2.0})
-		end
-	-------------------------------------------------------------------- illegal chummer
 	local fishchum = CreatePed(0, "u_m_m_blane",Config.ChumLoc.x,Config.ChumLoc.y,Config.ChumLoc.z-1, Config.ChumLoc.w, false, false)
-    Freeze(fishchum, true,Config.ChumLoc.w )
-	local options2 = { {label = "Make Fish Chum",icon = "fas fa-eye", serverEvent = 'md-fishing:server:fishchum', },}
-	local options2qb = { {label = "Make Fish Chum",icon = "fas fa-eye", type = 'server', event = 'md-fishing:server:fishchum', },}
-		if Config.oxtarget then	  
-			exports.ox_target:addLocalEntity(fishchum, options2)	
-		else
-			exports['qb-target']:AddTargetEntity(fishchum, { options = options2qb, distance = 2.0})
-		end	
-	-------------------------------------------------------------------- Shop Creation
-	local Shop = {}
-	for k, v in pairs (Config.Items) do 
-		Shop[#Shop + 1] = {
-			   icon = GetImage(k),
-				title = GetLabel(k),
-				description = '$'..v.price,
-				event = "md-fishing:client:shopamounts",
-				args = {
-					item = k,
-					amount = v.amount,
-					price = v.price
-				},
-			}
-		lib.registerContext({id = 'fishshop',title = "Fish Supplies", options = Shop})
-	end
-	---------------------------------------------------------------------- Shop Ped
 	local fishstore = CreatePed(0, "u_m_m_blane",Config.ShopLoc.x,Config.ShopLoc.y,Config.ShopLoc.z-1, Config.ShopLoc.w, false, false)
+    Freeze(fishbuyer, true,Config.FishBuyer.w)
+	Freeze(fishchum, true,Config.ChumLoc.w )
 	Freeze(fishstore, true, Config.ShopLoc.w)
-	local options3 = {{    label = "Open Shop",    icon = "fas fa-eye", action = function() lib.showContext('fishshop') end},}
-	local options3ox = {{    label = "Open Shop",    icon = "fas fa-eye", onSelect = function() lib.showContext('fishshop') end},}
-		if Config.oxtarget then	
-			exports.ox_target:addLocalEntity(fishstore, options3ox)	
-		else
-			exports['qb-target']:AddTargetEntity(fishstore, { options = options3, distance = 2.0})
-		end
-	----------------------------------------------------------------------- breakdown loot creation
-	local Loot = {}
-	for k, v in pairs (Config.MagnetFishing) do 
-		Loot[#Loot + 1] = {
-			   icon = GetImage(v),
-				title = GetLabel(v),
-				serverEvent = 'md-fishing:server:breakdownmagnetloot',
-				args = {
-					item = v
-				},
-			}
-		lib.registerContext({id = 'magnetbreak',title = "Rusty Item Breakdown", options = Loot})
-	end
-	if Config.oxtarget then
-		materialbreak = exports.ox_target:addBoxZone({ coords = Config.MaterialBreakdown , size = vec3(2,2,2), debug = false,
-			options = {{	label = "Break Down",	icon = "fas fa-eye",	onSelect = function() lib.showContext('magnetbreak') end}
-		}
-		})	
-	else
-		exports['qb-target']:AddBoxZone("magnetbreakdown",Config.MaterialBreakdown ,1.5, 1.75, {name = "magnetbreakdown",heading = 11.0,minZ = Config.MaterialBreakdown.z-2,maxZ = Config.MaterialBreakdown.z+2,}, {
-			options = {	{label = "Break Down",icon = "fas fa-eye",action = function() lib.showContext('magnetbreak') end}},
-		distance = 2.5
-		})
-	end
+	AddSingleModel(fishbuyer, {label = "Sell Fish",    icon = "fas fa-eye",   action = function() makeSales('fish') lib.showContext('fish')end }, fishbuyer)
+	AddSingleModel(fishchum,  {label = "Make Fish Chum",icon = "fas fa-eye", serverEvent = 'md-fishing:server:fishchum', }, fishbuyer)
+	AddSingleModel(fishstore, {label = "Open Shop",    icon = "fas fa-eye", action = function() makeMenu('fishshop') lib.showContext('fishshop') end}, fishstore)
+	AddBoxZoneSingle('breadown', Config.MaterialBreakdown, {label = "break Down",icon = "fas fa-eye",action = function() breakDown('breakDown') lib.showContext('breakDown') end})
 end)
 
-RegisterNetEvent("md-fishing:client:shopamounts", function(data)
-	local price = data.price 
-	local settext = "Amnt: "..data.amount.." | Cost: "..price or "Cost: "..price
-	local max = data.amount  
-	local input = exports.ox_lib:inputDialog(data.item .."!",   {
-		{ type = 'select', label = "Payment Type", default = "cash",
-			options = {	{ value = "cash"},	{ value = "bank"},}
-		},
-		{ type = 'number', label = "Amount to buy", description = settext, min = 0, max = max, default = 1 },
-	})
-	if input[2] == nil or input[2] == 0 then return end
-	TriggerServerEvent("md-fishing:server:buystuff", input[2], input[1], data.item, data.price )
-end)
-
-RegisterNetEvent("md-fishing:client:sellfish", function(data)
-	local sales = {}
-	for k, v in pairs (Config.FishSells) do 
-	   if QBCore.Functions.HasItem(k) then
-		sales[#sales + 1] = {
-			   icon = GetImage(k),
-				title = GetLabel(k),
-				description = '$'..v.price,
-				serverEvent = "md-fishing:server:sellfish",
-				args = {
-					item = k,
-					price = v.price
-				},
-			}
-		end
-		lib.registerContext({id = 'sellfishies',title = "Fish Buyer", options = sales})
-	end
-	lib.showContext('sellfishies')
-end)
 CreateThread(function() --- zone creation necessary to get the globals to allow/disallow fishing
 	for k, v in pairs (Config.FishingZones) do
 		if v.enabled then 
 			sphere = lib.zones.sphere({ coords = v.loc, radius = v.radius, debug = v.debug,
-				onEnter = function()
-					Notify("Pull Your Fishing Pole Out")
-					infish = true
-				end,
-				onExit = function()
-					infish = false	
-				end,
+				onEnter = function() Notify("Pull Your Fishing Pole Out")	infish = true end,
+				onExit = function()	infish = false	end,
 			})
 		end
 	end
@@ -165,149 +69,73 @@ CreateThread(function() --- zone creation necessary to get the globals to allow/
 				end,
 				onExit = function()	inillfish = false end
 			})
-		end	
-	end
-end)		
-
-RegisterNetEvent("md-fishing:client:fishing", function()  --- reg fishing creation
-	if not infish then Notify('You Cant Fish here', 'error') return end
-	local count = 0
-	local items = {'spinnerbait', 'softplasticbait', 'plugbait', 'worms' }
-	for k, v in pairs (items) do 
-		if QBCore.Functions.HasItem(v) then
-			count = count + 1
 		end
 	end
-	
-	if fishing or count == 0 then 
-		Notify("You Put Your Pole Away", 'success')
-		DetachEntity(fishing, true, true)
-		DeleteObject(fishing)
-		fishing = false
-		ClearPedTasks(PlayerPedId())
-		if Config.FreezePlayerWhileFishing then FreezeEntityPosition(PlayerPedId(), false) end
-	else	
-		local pos = GetEntityCoords(PlayerPedId(), true)
-		lib.requestAnimDict('amb@world_human_stand_fishing@idle_a', 1000)
-		TaskPlayAnim(PlayerPedId(), 'amb@world_human_stand_fishing@idle_a', 'idle_a', 5.0, -1, -1, 50, 0, false, false, false)
-		lib.requestModel("prop_fishing_rod_01", 1000)
-		local object = CreateObject("prop_fishing_rod_01", pos.x, pos.y, pos.z, true, true, true)
-		AttachEntityToEntity(object, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
-		fishing = object
-		if Config.FreezePlayerWhileFishing then FreezeEntityPosition(PlayerPedId(), true) end
-		local fish, ill, mag = lib.callback.await('md-fishing:server:GetLevels', false)
-		if Config.AutoRecast then 
-			repeat
-				Wait(Config.Levels[fish]['time'] * 1000)
-				if fishing == false then return end
-				found()
-				if  minigame(2,10) then TriggerServerEvent('md-fishing:server:givefish', GetEntityCoords(PlayerPedId())) end
-			until fishing == false
-		else
-			Wait(Config.Levels[fish]['time'] * 1000)
-			if not fishing then return end
-			found()
-			if not minigame(2,10) then return end
-			TriggerServerEvent('md-fishing:server:givefish')
-			if fishing then 
-				DetachEntity(fishing, true, true)
-				DeleteObject(fishing)
-				ClearPedTasks(PlayerPedId())
-				fishing = false
-			end
-		end
-	end	
 end)
 
-RegisterNetEvent("md-fishing:client:illegalfishing", function() 
-	if tooweak then Notify('You Arent Strong Enough For This Yet', 'error') return end
-	if not inillfish then Notify('You Cant Fish Here', 'error') return end
-	if illfish or not QBCore.Functions.HasItem('chum') then 
-		Notify("You Put Your Pole Away", 'success')
-		DetachEntity(illfish, true, true)
-		DeleteObject(illfish)
-		illfish = false
-		ClearPedTasks(PlayerPedId())
-		if Config.FreezePlayerWhileFishing then FreezeEntityPosition(PlayerPedId(), false) end
-	else	
-		local pos = GetEntityCoords(PlayerPedId(), true)
-		lib.requestAnimDict('amb@world_human_stand_fishing@idle_a', 1000)
-		TaskPlayAnim(PlayerPedId(), 'amb@world_human_stand_fishing@idle_a', 'idle_a', 5.0, -1, -1, 50, 0, false, false, false)
-		lib.requestModel("prop_fishing_rod_01", 1000)
-		local object = CreateObject("prop_fishing_rod_01", pos.x, pos.y, pos.z, true, true, true)
-		AttachEntityToEntity(object, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
-		illfish = object
-		if Config.FreezePlayerWhileFishing then FreezeEntityPosition(PlayerPedId(), true) end
-		local fish, ill, mag = lib.callback.await('md-fishing:server:GetLevels', false)
-		
-		if Config.AutoRecast then 
-			repeat
-				Wait(Config.Levels[ill]['time'] * 1000)
-				if illfish == false then return end
-				found()
-				if  minigame(2,10) then TriggerServerEvent('md-fishing:server:giveillegalfish') end
-				PoliceCall(Config.PoliceChance)
-			until illfish == false
-		else
-			Wait(Config.Levels[ill]['time'] * 1000)
-			if not illfish then return end
-			found()
-			if minigame(2,10) then TriggerServerEvent('md-fishing:server:giveillegalfish') PoliceCall(Config.PoliceChance) end
-			if illfish then 
-				DetachEntity(illfish, true, true)
-				DeleteObject(illfish)
-				illfish = false
-				ClearPedTasks(PlayerPedId())
-			end	
-		end
-	end	
+local pole = nil
+function delete(pole)
+    DetachEntity(pole, true, true)
+    DeleteObject(pole)
+    fishing = false
+    ClearPedTasks(PlayerPedId())
+    Notify("You Put Your Pole Away", 'success')
+    if Config.FreezePlayerWhileFishing then FreezeEntityPosition(PlayerPedId(), false) end
+end
+
+function poleMake()
+    local pos = GetEntityCoords(PlayerPedId(), true)
+    local pole = CreateObject("prop_fishing_rod_01", pos.x, pos.y, pos.z, true, true, true)
+    TaskPlayAnim(PlayerPedId(), 'amb@world_human_stand_fishing@idle_a', 'idle_a', 5.0, -1, -1, 50, 0, false, false, false)
+    AttachEntityToEntity(pole, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
+    return pole
+end
+
+function startFishing(baitTypes, locationCheck, locationError, strengthCheck, strengthError)
+    if strengthCheck and strengthCheck then Notify(strengthError, 'error') return end
+    if not locationCheck then Notify(locationError, 'error') return end
+    if fishing then delete(pole) return end
+    local bait = getItemCount(baitTypes)
+    if bait == 0 then Notify('You Have No Bait', 'error') return end
+	local pos = GetEntityCoords(PlayerPedId(), true)
+    pole = CreateObject("prop_fishing_rod_01", pos.x, pos.y, pos.z, true, true, true)
+    TaskPlayAnim(PlayerPedId(), 'amb@world_human_stand_fishing@idle_a', 'idle_a', 5.0, -1, -1, 50, 0, false, false, false)
+    AttachEntityToEntity(pole, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
+    fishing = true
+    if Config.FreezePlayerWhileFishing then FreezeEntityPosition(PlayerPedId(), true) end
+    return pole
+end
+
+function fishLoop(baitTypes, fishLevel, eventType)
+    repeat
+		if not fishing then return end
+        local baits = getItemCount(baitTypes)
+        if baits == 0 then delete(pole) fishing = false return end
+        Wait(Config.Levels[fishLevel]['time'] * 1000)
+		if not fishing then return end
+        found()
+        if minigame() then TriggerServerEvent('md-fishing:server:givefish', eventType) end
+        if not Config.AutoRecast then fishing = false end
+    until not fishing
+end
+
+RegisterNetEvent("md-fishing:client:fishing", function(data)
+    local fishingTypes = {
+        fishing = {baits = {'spinnerbait', 'softplasticbait', 'plugbait', 'worms'}, event = 'fish', locationCheck = infish, locationError = 'You can\'t fish here'},
+        magnetfishing = {baits = {'magnet'}, event = 'fish', locationCheck = infish, locationError = 'You can\'t fish here'},
+        illegal = {baits = {'chum'}, event = 'illegal', locationCheck = inillfish, locationError = 'You Cant Fish Here', strengthCheck = tooweak, strengthError = 'You Arent Strong Enough For This Yet'}
+    }
+
+    local fishingType = fishingTypes[data]
+    if fishingType then
+        local fish = startFishing(fishingType.baits, fishingType.locationCheck, fishingType.locationError, fishingType.strengthCheck, fishingType.strengthError)
+        if not fish then return end
+        local fishLevel = lib.callback.await('md-fishing:server:GetLevels', false, data)
+        fishLoop(fishingType.baits, fishLevel, fishingType.event)
+    end
 end)
 
-RegisterNetEvent("md-fishing:client:magnetfishing")
-AddEventHandler("md-fishing:client:magnetfishing", function() 
-	if not infish then Notify('You Cant Fish Here', 'error') return end
-	
-	if magnetfishing or not QBCore.Functions.HasItem('magnet') then 
-		Notify("You Put Your Pole Away", 'success')
-		DetachEntity(magnetfishing, true, true)
-		DeleteObject(magnetfishing)
-		magnetfishing = false
-		ClearPedTasks(PlayerPedId())
-		if Config.FreezePlayerWhileFishing then FreezeEntityPosition(PlayerPedId(), false) end
-	else	
-		local pos = GetEntityCoords(PlayerPedId(), true)
-		lib.requestAnimDict('amb@world_human_stand_fishing@idle_a', 1000)
-		TaskPlayAnim(PlayerPedId(), 'amb@world_human_stand_fishing@idle_a', 'idle_a', 5.0, -1, -1, 50, 0, false, false, false)
-		lib.requestModel("prop_fishing_rod_01", 1000)
-		local object = CreateObject("prop_fishing_rod_01", pos.x, pos.y, pos.z, true, true, true)
-		AttachEntityToEntity(object, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
-		magnetfishing = object
-		if Config.FreezePlayerWhileFishing then FreezeEntityPosition(PlayerPedId(), true) end
-			local fish, ill, mag = lib.callback.await('md-fishing:server:GetLevels', false)
-			if Config.AutoRecast then 
-				repeat
-					Wait(Config.Levels[mag]['time'] * 1000)
-					if magnetfishing == false then return end
-					found()
-					if  minigame(2,10) then TriggerServerEvent('md-fishing:server:givemagnetfish') end
-				until magnetfishing == false
-			else
-				Wait(Config.Levels[mag]['time'] * 1000)
-				if magnetfishing == false then return end
-				found()
-				if minigame(2,10) then TriggerServerEvent('md-fishing:server:givemagnetfish')  end
-				if magnetfishing then
-					DetachEntity(magnetfishing, true, true)
-					DeleteObject(magnetfishing)
-					magnetfishing = false
-					ClearPedTasks(PlayerPedId())
-				end
-			end
-	end	
-end)
-
-RegisterNetEvent('md-fishing:client:placechest')
-AddEventHandler("md-fishing:client:placechest", function() 
+RegisterNetEvent("md-fishing:client:placechest", function() 
 	local chest = "prop_box_wood01a"
 	local chestloc = GetEntityCoords(PlayerPedId())
 

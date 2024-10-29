@@ -53,26 +53,100 @@ function progressbar(text, time, anim)
 	end	  
   end
 
-function minigame(num1, num2)
-    local check
-	if minigametype == 'ps' then
-    	exports['ps-ui']:Circle(function(success)
-        	check = success
-    	end, num1, num2) 
-    	return check
+  function minigame(tier)
+	local time = 0
+	local game = Config.Minigames
+	if minigametype == 'ps_circle' then
+		local check 
+		exports['ps-ui']:Circle(function(success)
+			check = success
+		end, game['ps_circle'].amount, game['ps_circle'].speed) 
+		return check
+	elseif minigametype == 'ps_maze' then
+	   local check 
+	   exports['ps-ui']:Maze(function(success)
+		   check = success
+	   end, game['ps_maze'].timelimit)
+	   return check
+   elseif minigametype == 'ps_scrambler' then
+	   local check 
+	   exports['ps-ui']:Scrambler(function(success)
+		   check = success
+	   end, game['ps_scrambler'].type,  game['ps_scrambler'].time, game['ps_scrambler'].mirrored)
+	   return check
+   elseif minigametype == 'ps_var' then
+	   local check 
+	   exports['ps-ui']:VarHack(function(success)
+		   check = success
+	   end, game['ps_var'].numBlocks,  game['ps_var'].time)
+	   return check
+   elseif minigametype == 'ps_thermite' then
+	   local check 
+	   exports['ps-ui']:Thermite(function(success)
+		   check = success
+	   end, game['ps_thermite'].time,  game['ps_thermite'].gridsize, game['ps_thermite'].incorrect)
+	   return check
 	elseif minigametype == 'ox' then
-		num1 = 'easy'
-		if num2 <= 6 then num2 = 'hard' elseif num2 >= 7 and num2 <= 12 then num2 = 'medium' else num2 = 'easy' end
-		local success = lib.skillCheck({num1, num2}, {'1', '2', '3', '4'})
+		local success = lib.skillCheck(game['ox'], {'1', '2', '3', '4'})
 		return success 
-    elseif minigametype == 'none' then
-		return true
+	elseif minigametype == 'blcirprog' then
+		local success = exports.bl_ui:CircleProgress(game['blcirprog'].amount, game['blcirprog'].speed)
+		return success
+	elseif minigametype == 'blprog' then
+		local success = exports.bl_ui:Progress(game['blprog'].amount, game['blprog'].speed)
+		return success
+	elseif minigametype == 'blkeyspam' then
+		local success = exports.bl_ui:KeySpam(game['blkeyspam'].amount, game['blprog'].difficulty)
+		return success
+	elseif minigametype == 'blkeycircle' then
+		local success = exports.bl_ui:KeyCircle(game['blkeycircle'].amount, game['blkeycircle'].difficulty, game['blkeycircle'].keynumbers)
+		return success	
+	elseif minigametype == 'blnumberslide' then
+		local success = exports.bl_ui:NumberSlide(game['blnumberslide'].amount, game['blnumberslide'].difficulty, game['blnumberslide'].keynumbers)
+		return success	
+	elseif minigametype == 'blrapidlines' then
+		local success = exports.bl_ui:RapidLines(game['blrapidlines'].amount, game['blrapidlines'].difficulty, game['blrapidlines'].numberofline)
+		return success	
+	elseif minigametype == 'blcircleshake' then
+		local success = exports.bl_ui:CircleShake(game['blcircleshake'].amount, game['blcircleshake'].difficulty, game['blcircleshake'].stages)
+		return success	
+	elseif minigametype == 'glpath' then 
+		local settings = {gridSize = game['glpath'].gridSize, lives = game['glpath'].lives, timeLimit = game['glpath'].timelimit}
+		local successes = false
+		 exports["glow_minigames"]:StartMinigame(function(success)
+			 if success then successes = true else successes = false  end
+		 end, "path", settings)
+		 repeat
+			Wait(1000)
+			time = time + 1
+		 until successes or time == 100
+		 if successes then return true end
+	elseif minigametype == 'glspot' then
+		local settings = {gridSize = game['glspot'].gridSize, timeLimit = game['glspot'].gridSize, charSet =  game['glspot'].charSet, required = game['glspot'].required}
+		local successes = false
+		exports["glow_minigames"]:StartMinigame(function(success)
+		   if success then successes = true else successes = false  end
+		end, "spot", settings)
+		repeat
+		   Wait(1000)
+		   time = time + 1
+		until successes or time == 100
+	elseif minigametype == 'glmath' then
+		local settings = {timeLimit  = game['glmath'].timeLimit}
+		local successes = false
+		exports["glow_minigames"]:StartMinigame(function(success)
+		   if success then successes = true else successes = false  end
+		end, "math", settings)
+		repeat
+		   Wait(1000)
+		   time = time + 1
+		until successes or time == 100
+	elseif minigametype == 'none' then 
+		return true			
 	else	
-		
-        print"dude, it literally tells you what you need to set it as in the config"
-    end
-end
-
+		   print"^1 SCRIPT ERROR: Md-Drugs set your minigame with one of the options!"
+	end
+ end
 
  function Notify(text, type)
 	if notifytype =='ox' then
@@ -82,8 +156,8 @@ end
 	elseif notifytype == 'okok' then
 	  exports['okokNotify']:Alert('', text, 4000, type, false)
 	else 
-       	print"dude, it literally tells you what you need to set it as in the config"
-    	end   
+       	print"^1 SCRIPT ERROR: Md-DRUGS set your notification with one of the options!"
+    end   
   end
 
 function GetImage(img)
@@ -126,12 +200,13 @@ end
 function ItemCheck(item)
 local success 
 if GetResourceState('ox_inventory') == 'started' then
-    if exports.ox_inventory:GetItemCount(item) >= 1 then return true else Notify('You Need ' .. GetLabel(item) .. " !", 'error') end
+    if exports.ox_inventory:GetItemCount(item) >= 1 then return true else Notify('You Need ' .. GetLabel(item) .. " !", 'error') return false end
 else
     if QBCore.Shared.Items[item] == nil then print("There Is No " .. item .. " In Your QB Items.lua") return end
-    if QBCore.Functions.HasItem(item) then success = item return success else Notify('You Need ' .. QBCore.Shared.Items[item].label .. " !", 'error') end
+    if QBCore.Functions.HasItem(item) then return true else Notify('You Need ' .. QBCore.Shared.Items[item].label .. " !", 'error') return false end
 end
 end
+
 function CheckItems(item)
 	local success = 0
 	if GetResourceState('ox_inventory') == 'started' then
@@ -176,7 +251,7 @@ function PoliceCall(chance)
 	local math = math.random(1,100)
 	if math <= chance then
 		if dispatch == 'ps' then 
-			exports['ps-dispatch']:DrugSale()
+			exports['ps-dispatch']:SuspiciousActivity()
 		elseif dispatch == 'cd' then
 			local data = exports['cd_dispatch']:GetPlayerInfo()
 			TriggerServerEvent('cd_dispatch:AddNotification', {
@@ -198,13 +273,13 @@ function PoliceCall(chance)
 				}
 			})
 		elseif	dispatch == 'core' then
-			exports['core_dispatch']:addCall("420-69", "Drugs Are Being Sold", {
+			exports['core_dispatch']:addCall("420-69", "Illegal Poaching", {
 				{icon="fa-ruler", info="4.5 MILES"},
 				}, {GetEntityCoords(PlayerPedId())}, "police", 3000, 11, 5 )
 		elseif dispatch == 'aty' then 
-			exports["aty_dispatch"]:SendDispatch('Drug Sale', '420-69', 40, {'police'})
+			exports["aty_dispatch"]:SendDispatch('Illgeal Poaching', '420-69', 40, {'police'})
 		elseif dispatch == 'qs' then
-			exports['qs-dispatch']:DrugSale()
+			exports['qs-dispatch']:SuspiciousActivity()
 		else
 			print('Congrats, You Choose 0 of the options :)')	
 		end
@@ -225,4 +300,160 @@ function Freeze(entity, toggle, head)
         FreezeEntityPosition(entity, toggle)
         SetEntityHeading(entity, head)
 		SetBlockingOfNonTemporaryEvents(entity, toggle)
+end
+
+function AddBoxZoneSingle(name, loc, data)
+	if Config.Target == 'qb' then
+		exports['qb-target']:AddBoxZone(name, loc, 1.5, 1.75, {name = name, minZ = loc.z-1,maxZ = loc.z +1}, 
+		{ options = {
+			{
+			  type = data.type or nil, 
+			  event = data.event or nil,
+			  action = data.action or nil,
+			  icon = data.icon, 
+			  label = data.label,
+			  data = data.data,
+			  canInteract = data.canInteract,
+			}
+		}, 
+		distance = 2.0
+	 })
+	elseif Config.Target == 'ox' then
+		exports.ox_target:addBoxZone({coords = loc, size = vec3(1,1,1), options = {
+			{
+			  type = data.type or nil, 
+			  event = data.event or nil,
+			  onSelect = data.action or nil,
+			  distance = 2.5,
+			  icon = data.icon, 
+			  label = data.label,
+			  data = data.data,
+			  canInteract = data.canInteract,
+			}
+		}, })
+	end
+end
+function sorter(sorting, value) 
+	table.sort(sorting, function(a, b) return a[value] < b[value] end)
+end
+function makeMenu(name)
+	local menu = {}
+	local data = lib.callback.await('md-fishing:server:menu', false, name)
+	for k, v in pairs (data.table) do
+		menu[#menu + 1] = {
+			icon =  GetImage(v.name),
+			description = '$'.. v.price,
+			title = GetLabel(v.name),
+			onSelect = function()
+				local settext = "Cost: $"..v.price
+				local dialog = exports.ox_lib:inputDialog(v.name .."!",   {
+					{ type = 'select', label = "Payment Type", default = "cash", options = {	{ value = "cash"},	{ value = "bank"},}},
+					{ type = 'number', label = "Amount to buy", description = settext, min = 0, max = v.amount, default = 1 },
+				})
+				if not dialog[1] then return end
+				TriggerServerEvent("md-fishing:server:purchaseGoods", dialog[2], dialog[1], v.name, v.price, data.table, k)
+			end,
+		}
+	end
+	sorter(menu, 'title')
+	lib.registerContext({id = data.id, title = data.title, options = menu})
+end
+
+function makeSales(name)
+	local menu = {}
+	local data = lib.callback.await('md-fishing:server:getSales', false, name)
+	for k, v in pairs (data.table) do
+		local dis = false
+		if not QBCore.Functions.HasItem(k) then
+			dis = true
+		end
+		menu[#menu + 1] = {
+			icon =  GetImage(k),
+			description = '$'.. v.price,
+			title = GetLabel(k),
+			disabled = dis,
+			onSelect = function()
+				TriggerServerEvent("md-fishing:server:sellGoods",v.price, data.table, k)
+			end,
+		}
+	end
+	sorter(menu, 'title')
+	lib.registerContext({id = data.id, title = data.title, options = menu})
+end
+
+function breakDown(name)
+	local menu = {}
+	local data = lib.callback.await('md-fishing:server:breakDown', false, name)
+	for k, v in pairs (data.table) do
+		local dis = false
+		if not QBCore.Functions.HasItem(k) then
+			dis = true
+		end
+		menu[#menu + 1] = {
+			icon =  GetImage(k),
+			description = 'Break Down ' .. GetLabel(k) .. ' For Random Materials',
+			title = GetLabel(k),
+			disabled = dis,
+			onSelect = function()
+				TriggerServerEvent("md-fishing:server:breakDown", data.table, k)
+			end,
+		}
+	end
+	sorter(menu, 'title')
+	lib.registerContext({id = data.id, title = data.title, options = menu})
+end
+
+function AddBoxZoneSingle(name, loc, data)
+	if Config.Target == 'qb' then
+		exports['qb-target']:AddBoxZone(name, loc, 1.5, 1.75, {name = name, minZ = loc.z-1,maxZ = loc.z +1}, 
+		{ options = {
+			{
+			  type = data.type or nil, 
+			  event = data.event or nil,
+			  action = data.action or nil,
+			  icon = data.icon, 
+			  label = data.label,
+			  data = data.data,
+			  canInteract = data.canInteract,
+			}
+		}, 
+		distance = 2.0
+	 })
+	elseif Config.Target == 'ox' then
+		exports.ox_target:addBoxZone({coords = loc, size = vec3(1,1,1), options = {
+			{
+			  type = data.type or nil, 
+			  event = data.event or nil,
+			  onSelect = data.action or nil,
+			  distance = 2.5,
+			  icon = data.icon, 
+			  label = data.label,
+			  data = data.data,
+			  canInteract = data.canInteract,
+			}
+		}, })
+	end
+end
+
+function AddSingleModel(model, data, num)
+	if Config.Target == 'qb' then
+		exports['qb-target']:AddTargetEntity(model, {options = {
+			{icon = data.icon, label = data.label, event = data.event or nil, action = data.action or nil, data = num }
+		}, distance = 2.5})
+	elseif Config.Target == 'ox' then
+		exports.ox_target:addLocalEntity(model, {icon = data.icon, label = data.label, event = data.event or nil, onSelect = data.action or nil, data = num, distance = 2.5 })
+	end
+end
+
+function getItemCount(item)
+	local amount = 0
+	for k, v in pairs (item) do
+		if GetResourceState('ox_inventory') == 'started' then
+			amount = amount + exports.ox_inventory:GetItemCount(v)
+		else
+			local count = lib.callback.await('md-fishing:server:GetItemCount', false, v)
+			amount = amount + count
+		end
+	end
+	return amount
 end
