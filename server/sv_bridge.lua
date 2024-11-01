@@ -76,7 +76,7 @@ function Notifys(source, text, type)
         TriggerClientEvent('okokNotify:Alert', src, '', text, 4000, type, false)
     else
         print"^1 Look At The Config For Proper Alert Options"    
-    end    
+    end
 end
 
 function GetLabels(item) 

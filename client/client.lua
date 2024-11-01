@@ -122,7 +122,7 @@ end
 RegisterNetEvent("md-fishing:client:fishing", function(data)
     local fishingTypes = {
         fishing = {baits = {'spinnerbait', 'softplasticbait', 'plugbait', 'worms'}, event = 'fish', locationCheck = infish, locationError = 'You can\'t fish here'},
-        magnetfishing = {baits = {'magnet'}, event = 'fish', locationCheck = infish, locationError = 'You can\'t fish here'},
+        magnetfishing = {baits = {'magnet'}, event = 'magnet', locationCheck = infish, locationError = 'You can\'t fish here'},
         illegal = {baits = {'chum'}, event = 'illegal', locationCheck = inillfish, locationError = 'You Cant Fish Here', strengthCheck = tooweak, strengthError = 'You Arent Strong Enough For This Yet'}
     }
 

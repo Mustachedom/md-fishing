@@ -66,7 +66,7 @@ RegisterServerEvent('md-fishing:server:givefish', function(data)
 		{bait = 'softplasticbait',  zone = 'fish',   type = 'fishxp',     level = 'fishing',      fish = Config.bait.softplasticbaitfishies[math.random(1, #Config.bait.softplasticbaitfishies)] },
 		{bait = 'plugbait', 		zone = 'fish',   type = 'fishxp',     level = 'fishing',      fish = Config.bait.plugbaitfishies[math.random(1, #Config.bait.plugbaitfishies)] },
 		{bait = 'worms', 			zone = 'fish',   type = 'fishxp',     level = 'fishing',      fish = Config.bait.wormsfishies[math.random(1, #Config.bait.wormsfishies)] },
-		{bait = 'magnet', 			zone = 'fish', 	 type = 'magxp',      level = 'magnetfish',   fish = Config.bait.MagnetFishing[math.random(1, #Config.bait.MagnetFishing)] },
+		{bait = 'magnet', 			zone = 'magnet', type = 'magxp',      level = 'magnetfish',   fish = Config.bait.MagnetFishing[math.random(1, #Config.bait.MagnetFishing)] },
 		{bait = 'chum', 			zone = 'illegal',type = 'illfishxp',  level = 'illegalfish',  fish = Config.bait.IllegalFish[math.random(1, #Config.bait.IllegalFish)] },
 	}
 	for k, v in pairs (bait) do
@@ -74,7 +74,7 @@ RegisterServerEvent('md-fishing:server:givefish', function(data)
 			if has >= 1 then return end
 			local fish = Player.Functions.GetItemByName(v.bait)
 			if fish then
-				if v.zone == 'fish' then
+				if v.zone == 'fish' or v.zone == 'magnet' then
 					if not isInFishingZone(src, 'fish') then return end
 				elseif v.zone == 'illegal' then
 					if not isInFishingZone(src, 'illegal') then return end
