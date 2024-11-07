@@ -1,4 +1,4 @@
-<h1>md-fishing</h1>
+#  md-fishing
 
 - [Rottenberger Video](https://www.youtube.com/watch?v=07dFZMks5e8)
 
@@ -11,23 +11,32 @@ Special shoutout to my beta testers! Your feedback has been invaluable.
 
 <h1>Dependencies</h1>
 
-- [QBCore](https://www.merriam-webster.com/dictionary/beautiful)
+- [read](https://www.hookedonphonics.com/)
 
-- [Ox_lib]
+- [ox_lib](https://github.com/overextended/ox_lib/releases/tag/v3.27.0)
 
-</h1>
 
 
 <h1>Setup : </h1>
 
-**step 1**
+<b> step 1:</b>
 
-run sql
+<b> Run SQL</b>
+ - how do i do that?
+	- Watch a youtube video
+ - How do i access my database
+	- ask your service provider
 
-**step 2**
+<b> Step 2 </b>
 
-- Add the following Items to `qb-core/shared/items.lua` and add the images to your inventory
+<b> Add Your items from list below </b>
 
+- How do I do that?
+	- Copy and Paste into your items.lua
+	- copy images to the inventory folder required
+
+
+<b> QB </b>
 ```lua
 ["atlanticdolphin"] 		 = {["name"] = "atlanticdolphin", 			["label"] = "Atlantic Dolphin", 		['weight'] = 100, 		["type"] = "item", 		["image"] = "atlanticdolphin.png", 			["unique"] = false, 	["useable"] = true, 	["shouldClose"] = true,	    ["description"] = ""},
 ["belugawhale"] 			 = {["name"] = "belugawhale", 			    ["label"] = "Beluga Whale", 		    ['weight'] = 100, 		["type"] = "item", 		["image"] = "belugawhale.png", 			    ["unique"] = false, 	["useable"] = true, 	["shouldClose"] = true,	    ["description"] = ""},
@@ -86,414 +95,572 @@ run sql
 
 ```
 
-OR if you use ox_inv **credits to Avenge**
-```
+<b> OX </b> **credits to Avenge**
+
+
+```lua
 ['atlanticdolphin'] = {
-	label = 'Atlantic Dolphin',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A beautiful atlantic dolphin!"
+    label = 'Atlantic Dolphin',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A beautiful atlantic dolphin!",
+    client = {
+        image = 'atlanticdolphin.png'
+    }
 },
 
 ['belugawhale'] = {
-	label = 'Beluga Whale',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "How did you catch this with only a rod?!"
+    label = 'Beluga Whale',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "How did you catch this with only a rod?!",
+    client = {
+        image = 'belugawhale.png'
+    }
 },
 
 ['bluefish'] = {
-	label = 'Blue Fish',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A very blue fish"
+    label = 'Blue Fish',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A very blue fish",
+    client = {
+        image = 'bluefish.png'
+    }
 },
 
 ['bluewhale'] = {
-	label = 'Blue Whale',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "Okay, you're joking right?"
+    label = 'Blue Whale',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "Okay, you're joking right?",
+    client = {
+        image = 'bluewhale.png'
+    }
 },
 
 ['catfish'] = {
-	label = 'Cat Fish',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A perrrrrrfect looking fish"
+    label = 'Cat Fish',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A perrrrrrfect looking fish",
+    client = {
+        image = 'catfish.png'
+    }
 },
 
 ['chileandolphin'] = {
-	label = 'Chileando Dolphin',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A beautiful dolphin"
+    label = 'Chileando Dolphin',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A beautiful dolphin",
+    client = {
+        image = 'chileandolphin.png'
+    }
 },
 
 ['chum'] = {
-	label = 'Chum',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A bucket of suspicous bait"
+    label = 'Chum',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A bucket of suspicious bait",
+    client = {
+        image = 'chum.png'
+    }
 },
 
 ['closedsafe'] = {
-	label = 'Rusted Safe',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A water bogged, rusty safe"
+    label = 'Rusted Safe',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A water bogged, rusty safe",
+    client = {
+        image = 'closedsafe.png'
+    }
 },
 
 ['copperpipe'] = {
-	label = 'Rusted Copper Pipe',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A corroded, rusty copper pipe"
+    label = 'Rusted Copper Pipe',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A corroded, rusty copper pipe",
+    client = {
+        image = 'copperpipe.png'
+    }
 },
 
 ['fishingpole'] = {
-	label = 'Fishing Pole',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "I can catch something with this!"
+    label = 'Fishing Pole',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "I can catch something with this!",
+    client = {
+        image = 'fishingpole.png'
+    }
 },
 
 ['flounder'] = {
-	label = 'Flounder',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A yellow-ish fish"
+    label = 'Flounder',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A yellow-ish fish",
+    client = {
+        image = 'flounder.png'
+    }
 },
 
 ['goblinshark'] = {
-	label = 'Goblin Shark',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "Fuck me, it's ugly!"
+    label = 'Goblin Shark',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "Fuck me, it's ugly!",
+    client = {
+        image = 'goblinshark.png'
+    }
 },
 
 ['groundshark'] = {
-	label = 'Ground Shark',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "I'm sure I've seen this somewhere before"
+    label = 'Ground Shark',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "I'm sure I've seen this somewhere before",
+    client = {
+        image = 'groundshark.png'
+    }
 },
 
 ['halibut'] = {
-	label = 'Halibut',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A fish when cooked correctly is delicous"
+    label = 'Halibut',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A fish when cooked correctly is delicious",
+    client = {
+        image = 'halibut.png'
+    }
 },
 
 ['largemouthbass'] = {
-	label = 'Large Mouth Bass',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A bass with a big mouth, I wounder?"
+    label = 'Large Mouth Bass',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A bass with a big mouth, I wonder?",
+    client = {
+        image = 'largemouthbass.png'
+    }
 },
 
 ['leatherheadturtle'] = {
-	label = 'Leather Head Turtle',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A majestic turtle"
+    label = 'Leather Head Turtle',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A majestic turtle",
+    client = {
+        image = 'leatherheadturtle.png'
+    }
 },
 
+['magnetpole'] = {
+    label = 'Magent Pole',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "You Can Pull Things Easy Like A Slipknot with this. get it. haha.",
+    client = {
+        image = 'fishingpole.png'
+    }
+},
 ['magnet'] = {
-	label = 'Magnet',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A form of bait for certain fishing methods"
+    label = 'Magnet',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A form of bait for certain fishing methods",
+    client = {
+        image = 'magnet.png'
+    }
 },
-
 ['narwhal'] = {
-	label = 'Narwhal',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A unicorn whale!"
+    label = 'Narwhal',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A unicorn whale!",
+    client = {
+        image = 'narwhal.png'
+    }
 },
 
 ['panfish'] = {
-	label = 'Pan fish',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A fresh-water fish"
-},
-
-['panfish'] = {
-	label = 'Pan fish',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A fresh-water fish"
+    label = 'Pan fish',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A fresh-water fish",
+    client = {
+        image = 'panfish.png'
+    }
 },
 
 ['plugbait'] = {
-	label = 'Plug Bait',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A form of bait for certain fishing methods"
+    label = 'Plug Bait',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A form of bait for certain fishing methods",
+    client = {
+        image = 'plugbait.png'
+    }
 },
 
 ['reddrum'] = {
-	label = 'Red Drum',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A large, game fish"
+    label = 'Red Drum',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A large, game fish",
+    client = {
+        image = 'reddrum.png'
+    }
 },
 
 ['rustyak'] = {
-	label = 'Rusty Assault Rifle',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "An unusable, rusty assault rifle"
+    label = 'Rusty Assault Rifle',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "An unusable, rusty assault rifle",
+    client = {
+        image = 'rustyak.png'
+    }
 },
 
 ['rustyantenna'] = {
-	label = 'Rusty Antenna',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A rusty antenna"
+    label = 'Rusty Antenna',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A rusty antenna",
+    client = {
+        image = 'rustyantenna.png'
+    }
 },
 
 ['rustybike'] = {
-	label = 'Rusty Bike',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A rusty push bike"
+    label = 'Rusty Bike',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A rusty push bike",
+    client = {
+        image = 'rustybike.png'
+    }
 },
 
 ['rustychain'] = {
-	label = 'Rusted Chain',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A rusty, corroded chain"
+    label = 'Rusted Chain',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A rusty, corroded chain",
+    client = {
+        image = 'rustychain.png'
+    }
 },
 
 ['rustyelectronickit'] = {
-	label = 'Rusty Electronic Kit',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A rusty, corroded electronic kit"
+    label = 'Rusty Electronic Kit',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A rusty, corroded electronic kit",
+    client = {
+        image = 'rustyelectronickit.png'
+    }
 },
 
 ['rustypistol'] = {
-	label = 'Rusted Pistol',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "An unusable, rusty pistol"
+    label = 'Rusted Pistol',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "An unusable, rusty pistol",
+    client = {
+        image = 'rustypistol.png'
+    }
 },
 
 ['rustyraspberrypi'] = {
-	label = 'Rusty Raspberry Pi',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "This was once useable, that time has passed"
+    label = 'Rusty Raspberry Pi',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "This was once usable, that time has passed",
+    client = {
+        image = 'rustyraspberrypi.png'
+    }
 },
 
 ['rustyscanner'] = {
-	label = 'Rusty Scanner',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "This was once useable, that time has passed"
+    label = 'Rusty Scanner',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "This was once usable, that time has passed",
+    client = {
+        image = 'rustyscanner.png'
+    }
 },
 
 ['rustyscrapmetal'] = {
-	label = 'Rusty Scrap Metal',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "Rusty assortment of metals"
+    label = 'Rusty Scrap Metal',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "Rusty assortment of metals",
+    client = {
+        image = 'rustyscrapmetal.png'
+    }
 },
 
 ['rustyshotgun'] = {
-	label = 'Rusty Shotgun',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "An unusable, rusty shotgun"
+    label = 'Rusty Shotgun',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "An unusable, rusty shotgun",
+    client = {
+        image = 'rustyshotgun.png'
+    }
 },
 
 ['rustysign'] = {
-	label = 'Rusty Sign',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A rusty sign post"
+    label = 'Rusty Sign',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A rusty sign post",
+    client = {
+        image = 'rustysign.png'
+    }
 },
 
 ['rustytire'] = {
-	label = 'Rusty Tire',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A rusty rim and corroded tire"
+    label = 'Rusty Tire',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A rusty rim and corroded tire",
+    client = {
+        image = 'rustytire.png'
+    }
 },
 
 ['rustyusb'] = {
-	label = 'Rusty USB',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "Whatever was on it is long gone"
+    label = 'Rusty USB',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "Whatever was on it is long gone",
+    client = {
+        image = 'rustyusb.png'
+    }
 },
 
 ['rustywheelchair'] = {
-	label = 'Rusty Wheelchair',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "This would of been fun to use in a get-away"
+    label = 'Rusty Wheelchair',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "This would have been fun to use in a get-away",
+    client = {
+        image = 'rustywheelchair.png'
+    }
 },
 
 ['salmon'] = {
-	label = 'Salmon',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A delicous fish!"
+    label = 'Salmon',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A delicious fish!",
+    client = {
+        image = 'salmon.png'
+    }
 },
 
 ['softplasticbait'] = {
-	label = 'Soft Plastic Bait',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A form of bait for certain fishing methods"
+    label = 'Soft Plastic Bait',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A form of bait for certain fishing methods",
+    client = {
+        image = 'softplasticbait.png'
+    }
 },
 
 ['spermwhale'] = {
-	label = 'Sperm Whale',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "Did you have more than one person helping?"
+    label = 'Sperm Whale',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "Did you have more than one person helping?",
+    client = {
+        image = 'spermwhale.png'
+    }
 },
 
 ['spinnerbait'] = {
-	label = 'Spinner Bait',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A form of bait for certain fishing methods"
+    label = 'Spinner Bait',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A form of bait for certain fishing methods",
+    client = {
+        image = 'spinnerbait.png'
+    }
 },
 
 ['steelhead'] = {
-	label = 'Steelhead Trout',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A beautiful cold water, rainbow trout"
+    label = 'Steelhead Trout',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A beautiful cold water, rainbow trout",
+    client = {
+        image = 'steelhead.png'
+    }
 },
 
 ['stripeddolphin'] = {
-	label = 'Striped Dolphin',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "Not sure you should be catching this!"
+    label = 'Striped Dolphin',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "Not sure you should be catching this!",
+    client = {
+        image = 'stripeddolphin.png'
+    }
 },
 
 ['tigershark'] = {
-	label = 'Tiger Shark',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "Careful! They bite!"
+    label = 'Tiger Shark',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "Careful! They bite!",
+    client = {
+        image = 'tigershark.png'
+    }
 },
 
 ['tortoise'] = {
-	label = 'Hard Shell Tortoise',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "This creature might be 150 years old!"
+    label = 'Hard Shell Tortoise',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "This creature might be 150 years old!",
+    client = {
+        image = 'tortoise.png'
+    }
 },
 
 ['treasurechest'] = {
-	label = 'Tresure Chest',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "Who knows what could be inside!?"
+    label = 'Treasure Chest',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "Who knows what could be inside!?",
+    client = {
+        image = 'treasurechest.png'
+    }
 },
 
 ['trout'] = {
-	label = 'Trout',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A beautiful fish!"
+    label = 'Trout',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A beautiful fish!",
+    client = {
+        image = 'trout.png'
+    }
 },
 
 ['tuna'] = {
-	label = 'Tuna',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A large and delicous fish, this is worth alot!"
+    label = 'Tuna',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A large and delicious fish, this is worth a lot!",
+    client = {
+        image = 'tuna.png'
+    }
 },
 
 ['whitebass'] = {
-	label = 'White Bass',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A very sought after fish!"
+    label = 'White Bass',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A very sought after fish!",
+    client = {
+        image = 'whitebass.png'
+    }
 },
 
 ['worm'] = {
-	label = 'Worm Bait',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "A form of bait for certain fishing methods"
+    label = 'Worm Bait',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "A form of bait for certain fishing methods",
+    client = {
+        image = 'worm.png'
+    }
 },
+
 ['illegalpole'] = {
-	label = 'Strong Pole',
-	weight = 300,
-	stack = true,
-	close = false,
-	description = "This Can Pull A lot Of Weight"
+    label = 'Strong Pole',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "This can pull a lot of weight",
+    client = {
+        image = 'fishingpole.png'
+    }
 },
+
 ```
 
-**step 3**
+<b> Step 3 </b>
 
-- Modify `md-fishing/config.lua` to match your city.
+<b> Modify `md-fishing/config.lua` to match your city.</b>
+- some things have been moved **out** of the config and put into the server files
+	- fish/ rusty material loot moved to catch = {} on line 65 of server
+	- chum fish exchange moved to chumMake = {} on line 117 of server
+	- fish shop, sell fish, and breakdown rusty materials have moved to sv_bridge in respective tables
 
-**step 4** 
-add fishsplash.ogg to interact-sound if you dont it just wont make a sound
+
+<b> Step 4 </b>
+
+<b> add fishsplash.ogg to interact-sound if you dont it just wont make a sound </b>
 
 <h1>Fivemerr</h1>
 This is NOT a requirement but something I personally use and believe in.
