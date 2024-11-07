@@ -7,7 +7,7 @@ Config.ChumLoc = vector4(1026.52, -3037.92, 8.69, 350.03) -- where you break dow
 Config.ShopLoc = vector4(1314.10, 4282.58, 33.91, 240.26) -- where the shop is located to buy poles and bait
 Config.AutoRecast = true -- if false players will have to reclick their pole for every catch
 Config.TreasureChestObject = true -- this will put a chest on the ground people can third eye. if false it will run the event as a usuable item and not put a chest on the ground
-Config.TreasureChestchance = 20 -- must be 1-100 chance to get a treasure chest while fishing
+Config.TreasureChestchance = 5 -- must be 1-100 chance to get a treasure chest while fishing
 Config.LevelUpAmount = 60 -- amount of fish required to level up
 Config.StarIllLvl = 5 -- level required of regular fishing to be allowed to start illegal fishing
 
@@ -40,10 +40,10 @@ Config.FreezePlayerWhileFishing = true -- keeps players from moving while fishin
 Config.Target = 'ox'
 
 Config.FishingZones = { -- these locations will have blips and can do legal and magnet fishing
-    {loc = vector3(-1849.2, -1230.44, 13.02), radius = 30, debug = true, enabled = true },
-    {loc = vector3(-3427.21, 967.53, 8.35),   radius = 30, debug = true, enabled = true },
-    {loc = vector3(1313.22, 4229.9, 33.92),   radius = 30, debug = true, enabled = true },
-    {loc = vector3(40.83, 848.72, 197.73),    radius = 30, debug = true, enabled = true },
+    {loc = vector3(-1849.2, -1230.44, 13.02), radius = 30, debug = false, enabled = true },
+    {loc = vector3(-3427.21, 967.53, 8.35),   radius = 30, debug = false, enabled = true },
+    {loc = vector3(1313.22, 4229.9, 33.92),   radius = 30, debug = false, enabled = true },
+    {loc = vector3(40.83, 848.72, 197.73),    radius = 30, debug = false, enabled = true },
 }
  Config.Blips = {
     {loc =  vector3(-1849.2, -1230.44, 13.02),  sprite = 88, scale = 0.55, color = 2, label = 'Fishing Zone', enabled = true},
@@ -56,14 +56,14 @@ Config.FishingZones = { -- these locations will have blips and can do legal and 
  }
 
  Config.illegalfishingzones = { -- these will have no blips and will only work with illegal fishing
-    {loc =  vector3(1788.64, -3525.29, 0.54), radius = 250, debug = true, enabled = true },
-    {loc =  vector3(3190.5, -974.99, 0.37),   radius = 250, debug = true, enabled = true },
-    {loc =  vector3(1235.08, 7926.63, -1.26), radius = 250, debug = true, enabled = true },
-    {loc =  vector3(-3196.07, 2601.24, 1.33), radius = 250, debug = true, enabled = true },
+    {loc =  vector3(1788.64, -3525.29, 0.54), radius = 250, debug = false, enabled = true },
+    {loc =  vector3(3190.5, -974.99, 0.37),   radius = 250, debug = false, enabled = true },
+    {loc =  vector3(1235.08, 7926.63, -1.26), radius = 250, debug = false, enabled = true },
+    {loc =  vector3(-3196.07, 2601.24, 1.33), radius = 250, debug = false, enabled = true },
 }
 Config.Materialamount = 5 -- how many materials per item
 Config.Levels = { -- in seconds how long it takes to catch 1 fish by your level.
-    [0] =  {time = 5},
+    [0] =  {time = 55},
     [1] =  {time = 50},
     [2] =  {time = 45},
     [3] =  {time = 40},
@@ -74,10 +74,4 @@ Config.Levels = { -- in seconds how long it takes to catch 1 fish by your level.
     [8] =  {time = 15},
     [9] =  {time = 10},
     [10] = {time = 5},
-}
-
-Config.TreasureChest = { -- random loot you get from treasure chests
-     {item = 'lockpick', min = 1, max = 3},
-     { item = 'goldbar',min = 1, max = 3},
-     { item = 'repairkit', min = 1, max = 3},
 }
