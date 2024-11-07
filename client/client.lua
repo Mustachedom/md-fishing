@@ -73,15 +73,19 @@ CreateThread(function() --- zone creation necessary to get the globals to allow/
 	end
 end)
 
-function delete(pole)
+local function Fm(ped, bool)
+	FreezeEntityPosition(ped, bool)
+end
+
+local function delete(pole)
     DetachEntity(pole, true, true)
     DeleteObject(pole)
     fishing = false
     ClearPedTasks(PlayerPedId())
-    if Config.FreezePlayerWhileFishing then FreezeEntityPosition(PlayerPedId(), false) end
+    if Config.FreezePlayerWhileFishing then Fm(PlayerPedId(), false) end
 end
 
-function poleMake()
+local function poleMake()
     local pos = GetEntityCoords(PlayerPedId(), true)
     pole = CreateObject("prop_fishing_rod_01", pos.x, pos.y, pos.z, true, true, true)
     TaskPlayAnim(PlayerPedId(), 'amb@world_human_stand_fishing@idle_a', 'idle_a', 5.0, -1, -1, 50, 0, false, false, false)
@@ -89,30 +93,45 @@ function poleMake()
     return pole
 end
 
-function startFishing(baitTypes, locationCheck, locationError, strengthCheck, strengthError)
+local function startFishing(baitTypes, locationCheck, locationError, strengthCheck, strengthError)
     if strengthCheck and strengthCheck then Notify(strengthError, 'error') return end
     if not locationCheck then Notify(locationError, 'error')return end
-    if fishing then delete(pole) return end
     local bait = getItemCount(baitTypes)
     if bait == 0 then Notify('You Have No Bait', 'error') return end
     pole = poleMake()
     fishing = true
-    if Config.FreezePlayerWhileFishing then FreezeEntityPosition(PlayerPedId(), true) end
     return pole
 end
 
-function fishLoop(baitTypes, fishLevel, eventType)
+local function fishLoop(baitTypes, fishLevel, eventType)
+    local time = 0
     repeat
-		if not fishing then return end
+        if not fishing then break end
         local baits = getItemCount(baitTypes)
-        if baits == 0 then delete(pole) fishing = false return end
-        Wait(Config.Levels[fishLevel]['time'] * 1000)
-		if not DoesEntityExist(pole) then delete(pole) return end
+        if baits == 0 then break end
+        if Config.FreezePlayerWhileFishing then Fm(PlayerPedId(), true) end
+
+        repeat
+            time = time + 1
+            print(time, DoesEntityExist(pole))
+            Wait(1000) 
+            if not DoesEntityExist(pole) then
+                delete(pole)
+                Fm(PlayerPedId(), false)
+                return
+            end
+        until Config.Levels[fishLevel]['time'] == time or not DoesEntityExist(pole)
+        time = 0
         found()
-        if minigame() then TriggerServerEvent('md-fishing:server:givefish', eventType) end
-        if not Config.AutoRecast then delete(pole) fishing = false end
+        if minigame() then
+            TriggerServerEvent('md-fishing:server:givefish', eventType)
+        end
+        if not Config.AutoRecast then fishing = false end
     until not fishing
+	delete(pole)
+	Fm(PlayerPedId(), false)
 end
+
 
 RegisterNetEvent("md-fishing:client:fishing", function(data)
     local fishingTypes = {
@@ -121,6 +140,7 @@ RegisterNetEvent("md-fishing:client:fishing", function(data)
         illegal = {baits = {'chum'}, event = 'illegal', locationCheck = inillfish, locationError = 'You Cant Fish Here', strengthCheck = tooweak, strengthError = 'You Arent Strong Enough For This Yet'}
     }
     local fishingType = fishingTypes[data]
+	if fishing then delete(pole) Fm(PlayerPedId(), false)  return end
     if fishingType then
         local fish = startFishing(fishingType.baits, fishingType.locationCheck, fishingType.locationError, fishingType.strengthCheck, fishingType.strengthError)
         if not fish then return end
@@ -169,7 +189,7 @@ RegisterCommand('fishingrep', function()
 end,false)
 
 RegisterCommand('anchor', function()
-    local ped = GetPlayerPed(-1)
+    local ped = PlayerPedId()
     if IsPedInAnyBoat(ped) then
         local boat = GetVehiclePedIsIn(ped, true)
         if not IsEntityInWater(boat) then
