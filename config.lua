@@ -34,7 +34,6 @@ Config.Minigames = {
 Config.minigametype = 'ox' -- look above for options or choose none if you dont want any minigames 
 Config.Notify = 'ox' -- qb or ox (okok is experimental)
 Config.progressbartype = 'qb' -- qb or oxbar or oxcir
-Config.minigametype = 'ox' -- ps or ox
 Config.Dispatch = 'ps' -- ps or cd or core or aty
 Config.FreezePlayerWhileFishing = true -- keeps players from moving while fishing 
 Config.Target = 'ox'
