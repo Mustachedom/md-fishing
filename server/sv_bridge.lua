@@ -333,7 +333,7 @@ end)
 function getRep(source) 
     local Player = QBCore.Functions.GetPlayer(source)
     local rep = MySQL.query.await('SELECT * FROM mdfishing WHERE citizenid = ?', { Player.PlayerData.citizenid })
-    return rep
+    if rep[1] then return rep[1] else return rep end
 end
 
 function addRep(source, type) 

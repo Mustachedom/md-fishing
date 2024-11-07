@@ -56,44 +56,14 @@ Config.FishingZones = { -- these locations will have blips and can do legal and 
  }
 
  Config.illegalfishingzones = { -- these will have no blips and will only work with illegal fishing
-    {loc =  vector3(1788.64, -3525.29, 0.54), radius = 250, debug = false, enabled = true },
-    {loc =  vector3(3190.5, -974.99, 0.37),   radius = 250, debug = false, enabled = true },
-    {loc =  vector3(1235.08, 7926.63, -1.26), radius = 250, debug = false, enabled = true },
-    {loc =  vector3(-3196.07, 2601.24, 1.33), radius = 250, debug = false, enabled = true },
+    {loc =  vector3(1788.64, -3525.29, 0.54), radius = 250, debug = true, enabled = true },
+    {loc =  vector3(3190.5, -974.99, 0.37),   radius = 250, debug = true, enabled = true },
+    {loc =  vector3(1235.08, 7926.63, -1.26), radius = 250, debug = true, enabled = true },
+    {loc =  vector3(-3196.07, 2601.24, 1.33), radius = 250, debug = true, enabled = true },
 }
-
-Config.bait = {
-    spinnerfishies = {"largemouthbass", "panfish", "trout",},
-    softplasticbaitfishies = {"catfish", "whitebass", "salmon",},
-    plugbaitfishies = {"steelhead", "bluefish", "halibut",},
-    wormsfishies = {"flounder", "reddrum", "tunafish",},
-    MagnetFishing = {"rustyak", "rustypistol", "rustyshotgun", "rustybike", "rustysafe", "copperpipe", 
-        "closedsafe", "sheetmetal", "rustysign", "rustytire", "rustywheelchair", "rustychain", "rustyantenna", "rustyelectronickit", "rustyscanner",
-        "rustyraspberrypi", "rustyusb", "rustyscrapmetal",
-    },
-    IllegalFish = {"tigershark", "groundshark", "goblinshark", "stripeddolphin", "chileandolphin", "atlanticdolphin", "belugawhale", "bluewhale", 
-        "narwhal", "spermwhale", "seaturtle", "tortoise", "leatherheadturtle",
-    },
-}
-
- Config.ChumFish = { -- these will be broken down to make illegal fish bait "chum"
-  "flounder",
-  "reddrum",
-  "tunafish",
-  "steelhead",
-  "bluefish",
-  "halibut",
-  "catfish",
-  "whitebass",
-  "salmon",
-  "largemouthbass",
-  "panfish",
-  "trout",
-}
-
 Config.Materialamount = 5 -- how many materials per item
 Config.Levels = { -- in seconds how long it takes to catch 1 fish by your level.
-    [0] =  {time = 55},
+    [0] =  {time = 5},
     [1] =  {time = 50},
     [2] =  {time = 45},
     [3] =  {time = 40},
