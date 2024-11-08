@@ -113,7 +113,6 @@ local function fishLoop(baitTypes, fishLevel, eventType)
 
         repeat
             time = time + 1
-            print(time, DoesEntityExist(pole))
             Wait(1000) 
             if not DoesEntityExist(pole) then
                 delete(pole)
