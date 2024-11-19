@@ -625,7 +625,7 @@ Special shoutout to my beta testers! Your feedback has been invaluable.
     }
 },
 
-['worm'] = {
+['worms'] = {
     label = 'Worm Bait',
     weight = 300,
     stack = true,
