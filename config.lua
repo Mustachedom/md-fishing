@@ -1,10 +1,13 @@
 Config = {}
 ps = exports.ps_lib:init()
-
-Config.PoliceChance = 20 -- needs to be 1-99 
+ps.loadLangs("uwu") -- set your languages folder name here
+-- TODO: Langs
 Config.AutoRecast = true -- if false players will have to reclick their pole for every catch
+Config.FreezePlayerWhileFishing = true -- keeps players from moving while fishing 
+-- TODO: treasure chests stuff
 Config.TreasureChestObject = true -- this will put a chest on the ground people can punch and kick to break open if false it will run the event as a usuable item and not put a chest on the ground
 Config.TreasureChestchance = 5 -- must be 1-100 chance to get a treasure chest while fishing
+--- TODO: move these two to server
 Config.LevelUpAmount = 60 -- amount of fish required to level up
 Config.StarIllLvl = 5 -- level required of regular fishing to be allowed to start illegal fishing
 
@@ -28,10 +31,7 @@ Config.Minigames = {
     glmath =        {timeLimit = 300000},
 }
 
-Config.minigametype = 'ox' -- look above for options or choose none if you dont want any minigames 
-Config.Dispatch = 'ps' -- ps or cd or core or aty
-Config.FreezePlayerWhileFishing = true -- keeps players from moving while fishing 
-Config.Materialamount = 5 -- how many materials per item
+Config.minigametype = 'ox' -- look above for options or choose none if you dont want any minigames
 Config.Levels = { -- in seconds how long it takes to catch 1 fish by your level.
     [0] =  {time = 55},
     [1] =  {time = 50},

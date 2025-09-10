@@ -1,12 +1,4 @@
 
-local fishing = false
-local chestspawned = false
-local infish = false
-local inillfish = false
-local tooweak = false
-local pole = nil
-local anchor = nil
-
 TriggerServerEvent('md-fishing:server:checksql')
 
 local function found()
@@ -16,7 +8,20 @@ local function found()
 	Wait(500)
 	FreezeEntityPosition(PlayerPedId(), false)
 end
+
 local peds = {}
+
+local function createBlip(loc, blipData)
+	local blip = AddBlipForCoord(loc.x, loc.y, loc.z)
+	SetBlipSprite(blip, blipData.sprite)
+	SetBlipScale(blip, blipData.scale)
+	SetBlipColour(blip, blipData.color)
+	SetBlipAsShortRange(blip, true)
+	BeginTextCommandSetBlipName("STRING")
+	AddTextComponentString(blipData.label)
+	EndTextCommandSetBlipName(blip)
+end
+
 local function initScript()
 	local zoneLocations = ps.callback('md-fishing:server:getLocations')
 
@@ -53,21 +58,15 @@ local function initScript()
 		})
 		::continue::
 	end
+
 	for k, v in pairs (zoneLocations.fishBuyers) do
 		ps.requestModel(v.ped)
-		local ped = CreatePed(0, v.ped, v.loc.x, v.loc.y, v.loc.z, v.loc.w, false, false)
-		Freeze(ped, true, v.loc.w)
+		peds[#peds + 1] = CreatePed(0, v.ped, v.loc.x, v.loc.y, v.loc.z, v.loc.w, false, false)
+		Freeze(peds[#peds], true, v.loc.w)
 		if v.blipData and v.blipData.enabled then
-			local blip = AddBlipForCoord(v.loc.x, v.loc.y, v.loc.z)
-			SetBlipSprite(blip, v.blipData.sprite)
-			SetBlipScale(blip, v.blipData.scale)
-			SetBlipColour(blip, v.blipData.color)
-			SetBlipAsShortRange(blip, true)
-			BeginTextCommandSetBlipName("STRING")
-			AddTextComponentString(v.blipData.label)
-			EndTextCommandSetBlipName(blip)
+			createBlip(v.loc, v.blipData)
 		end
-		ps.entityTarget(ped, {
+		ps.entityTarget(peds[#peds], {
 			{
 				icon = 'fas fa-fish',
 				label = 'Sell Your Fish',
@@ -98,90 +97,174 @@ local function initScript()
 			},
 		})
 	end
+
+	for k, v in pairs (zoneLocations.shopLocation) do
+		ps.requestModel(v.ped)
+		peds[#peds + 1] = CreatePed(0, v.ped, v.loc.x, v.loc.y, v.loc.z, v.loc.w, false, false)
+		Freeze(peds[#peds], true, v.loc.w)
+		if v.blipData and v.blipData.enabled then
+			createBlip(v.loc, v.blipData)
+		end
+		ps.entityTarget(peds[#peds], {
+			{
+				icon = 'fas fa-shopping-basket',
+				label = 'Browse Shop',
+				action = function()
+					local itemList = ps.callback('md-fishing:server:getStores', 'fishShop', k)
+					if not itemList then return end
+					local menu = {}
+					for itemName, price in pairs (itemList) do
+						menu[#menu + 1] = {
+							title = ps.getLabel(itemName),
+							description = '$' .. price,
+							icon = ps.getImage(itemName),
+							action = function()
+								local input = ps.input('Purchase ' .. ps.getLabel(itemName), {
+									{type = 'number', min = 0, max = v.amount, title = 'How Many To Buy'},
+									{type = 'select', options = {{label = 'Cash', value = 'cash'}, {label = 'Bank', value = 'bank'}}, title = 'Payment Type'}
+								})
+								if input and not input[1] then return end
+								TriggerServerEvent('md-fishing:server:buyFishGear', k, itemName, {amount = input[1], type = input[2] or 'cash'})
+							end
+						}
+					end
+					ps.menu('Fish Shop', 'Fish Shop', menu)
+				end,
+			},
+		})
+	end
+
+	for k, v in pairs (zoneLocations.chumMaker) do 
+		ps.requestModel(v.ped)
+		peds[#peds + 1] = CreatePed(0, v.ped, v.loc.x, v.loc.y, v.loc.z, v.loc.w, false, false)
+		Freeze(peds[#peds], true, v.loc.w)
+		if v.blipData and v.blipData.enabled then
+			createBlip(v.loc, v.blipData)
+		end
+		ps.entityTarget(peds[#peds], {
+			{
+				label = 'Make Chum',
+				icon = 'fas fa-shopping-basket',
+				action = function()
+					local input = ps.input('Confirm You Want To Make Chum ', {
+						{
+							type = 'select', options = {{label = 'Yes', value = true}, {label = 'No', value = false}}, title = 'Confirm',
+							description = 'This will remove all your fish'
+						}
+					})
+					if input and not input[1] then return end
+					TriggerServerEvent('md-fishing:server:fishchum', k)
+				end
+			}
+		})
+	end
+
+	for k, v in pairs (zoneLocations.breakDown) do
+		if v.blipData and v.blipData.enabled then
+			createBlip(v.loc, v.blipData)
+		end
+		ps.boxTarget('matbreakdown' ..k, v.loc, {length = 1.0, width = 1.0, height = 1.0}, {
+			{
+				label = 'Break Down',
+				icon = 'fas fa-shopping-basket',
+				action = function()
+					local itemList = ps.callback('md-fishing:server:getBreakdown', k)
+					local menu = {}
+					for item, values in pairs (itemList) do
+						menu[#menu + 1] = {
+							title = ps.getLabel(item),
+							description = 'Break Down ' .. ps.getLabel(item),
+							action = function()
+								if not ps.progressbar('Breaking Down ' .. ps.getLabel(item), 4000, 'weld') then return end
+								TriggerServerEvent('md-fishing:server:breakDownRustys', k, item)
+							end
+						}
+					end
+					ps.menu('Break Down Materials', 'Break Down Materials', menu)
+				end
+			}
+		})
+	end
 end
 
 initScript()
 
-
-local function Fm(ped, bool)
-	FreezeEntityPosition(ped, bool)
-end
-
-local function delete(pole)
-    DetachEntity(pole, true, true)
-    DeleteObject(pole)
-    fishing = false
-    ClearPedTasks(PlayerPedId())
-    if Config.FreezePlayerWhileFishing then Fm(PlayerPedId(), false) end
-end
-
+local pole = nil
 local function poleMake()
-    local thisIsYourPlayersCurrentLocationOnTheMapRepresentedByThreeNumbersXYandZXmeansXaxisYmeansYaxisZmeansHeightItMakesSenseWhenYouThinkOf3D = GetEntityCoords(PlayerPedId(), true)
-    pole = CreateObject("prop_fishing_rod_01",
-	thisIsYourPlayersCurrentLocationOnTheMapRepresentedByThreeNumbersXYandZXmeansXaxisYmeansYaxisZmeansHeightItMakesSenseWhenYouThinkOf3D.x,
-	thisIsYourPlayersCurrentLocationOnTheMapRepresentedByThreeNumbersXYandZXmeansXaxisYmeansYaxisZmeansHeightItMakesSenseWhenYouThinkOf3D.y,
-	thisIsYourPlayersCurrentLocationOnTheMapRepresentedByThreeNumbersXYandZXmeansXaxisYmeansYaxisZmeansHeightItMakesSenseWhenYouThinkOf3D.z,
-	true, true, true)
-    TaskPlayAnim(PlayerPedId(), 'amb@world_human_stand_fishing@idle_a', 'idle_a', 5.0, -1, -1, 50, 0, false, false, false)
+    local pos = GetEntityCoords(PlayerPedId(), true)
+	ps.requestModel('prop_fishing_rod_01')
+	ps.requestAnim('amb@world_human_stand_fishing@idle_a')
+	TaskPlayAnim(PlayerPedId(), 'amb@world_human_stand_fishing@idle_a', 'idle_a', 5.0, -1, -1, 50, 0, false, false, false)
+	pole = CreateObject("prop_fishing_rod_01", pos.x, pos.y, pos.z, true, true, true)
     AttachEntityToEntity(pole, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
     return pole
 end
 
-local function startFishing(baitTypes, locationCheck, locationError, strengthCheck, strengthError)
-    if strengthCheck and strengthCheck then ps.notify(strengthError, 'error') return end
-    if not locationCheck then ps.notify(locationError, 'error')return end
-    local bait = getItemCount(baitTypes)
-    if bait == 0 then ps.notify('You Have No Bait', 'error') return end
-    pole = poleMake()
-    fishing = true
-    return pole
+local function deletePole()
+    DetachEntity(pole, true, true)
+    DeleteObject(pole)
+    ClearPedTasks(PlayerPedId())
+    if Config.FreezePlayerWhileFishing then FreezeEntityPosition(PlayerPedId(), false) end
 end
 
-local function fishLoop(baitTypes, fishLevel, eventType)
-    local time = 0
-    repeat
-        if not fishing then break end
-        local baits = getItemCount(baitTypes)
-        if baits == 0 then break end
-        if Config.FreezePlayerWhileFishing then Fm(PlayerPedId(), true) end
-
-        repeat
-            time = time + 1
-            Wait(1000) 
-            if not DoesEntityExist(pole) then
-                delete(pole)
-                Fm(PlayerPedId(), false)
-                return
-            end
-        until Config.Levels[fishLevel]['time'] == time or not DoesEntityExist(pole)
-        time = 0
-        found()
-        if minigame() then
-            TriggerServerEvent('md-fishing:server:givefish', eventType)
-        end
-        if not Config.AutoRecast then fishing = false end
-    until not fishing
-	delete(pole)
-	Fm(PlayerPedId(), false)
-end
-
-
-RegisterNetEvent("md-fishing:client:fishing", function(data)
-    local fishingTypes = {
-        fishing = {baits = {'spinnerbait', 'softplasticbait', 'plugbait', 'worms'}, event = 'fish', locationCheck = infish, locationError = 'You can\'t fish here'},
-        magnetfishing = {baits = {'magnet'}, event = 'magnet', locationCheck = infish, locationError = 'You can\'t fish here'},
-        illegal = {baits = {'chum'}, event = 'illegal', locationCheck = inillfish, locationError = 'You Cant Fish Here', strengthCheck = tooweak, strengthError = 'You Arent Strong Enough For This Yet'}
-    }
-    local fishingType = fishingTypes[data]
-	if fishing then delete(pole) Fm(PlayerPedId(), false)  return end
-    if fishingType then
-        local fish = startFishing(fishingType.baits, fishingType.locationCheck, fishingType.locationError, fishingType.strengthCheck, fishingType.strengthError)
-        if not fish then return end
-        local fishLevel = lib.callback.await('md-fishing:server:GetLevels', false, data)
-        fishLoop(fishingType.baits, fishLevel, fishingType.event)
-    end
+AddEventHandler('onResourceStop', function(resourceName)
+	if GetCurrentResourceName() == resourceName then
+		for _, ped in ipairs(peds) do
+			DeletePed(ped)
+		end
+	end
 end)
 
+local fishing = false
+RegisterNetEvent('md-fishing:client:fishing', function(Timer)
+	if IsPedInAnyVehicle(PlayerPedId(), false) then
+		ps.notify("You can't fish in a vehicle!", 'error')
+		TriggerServerEvent('md-fishing:server:stopFishing')
+		return
+	end
+	if fishing then
+		ps.notify("You are already fishing!", 'error')
+		return
+	end
+	fishing = true
+	poleMake()
+
+	repeat
+		local time = Timer
+		if Config.FreezePlayerWhileFishing then
+			FreezeEntityPosition(PlayerPedId(), true)
+		end
+		repeat
+			Wait(1000)
+			time = time - 1
+		until time == 0 or not fishing or not DoesEntityExist(pole)
+		if not fishing then
+			return
+		end
+		if not DoesEntityExist(pole) then
+			TriggerServerEvent('md-fishing:server:stopFishingNoAlert')
+			return
+		end
+		found()
+		if minigame() then
+			TriggerServerEvent('md-fishing:server:catchFish')
+		else
+			ps.notify("You failed to catch anything!", 'error')
+		end
+		if not Config.AutoRecast then
+			fishing = false
+			deletePole()
+		end
+	until not fishing
+end)
+
+RegisterNetEvent('md-fishing:client:stopfishing', function()
+	fishing = false
+	FreezeEntityPosition(PlayerPedId(), false)
+	deletePole()
+end)
+
+local anchor = false
 RegisterCommand('anchor', function()
     local ped = PlayerPedId()
     if IsPedInAnyBoat(ped) then
@@ -204,8 +287,4 @@ RegisterCommand('anchor', function()
     else
         ps.notify("Where is your boat?")
     end
-end, false)
-
-RegisterCommand('testFish', function()
-	TriggerServerEvent('md-fishing:server:givefish')
 end, false)

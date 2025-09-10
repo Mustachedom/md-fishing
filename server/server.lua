@@ -1,12 +1,11 @@
-
-local poles = {'fishingpole', 'magnetpole', 'illegalpole'}
-
+local activeFishers = {}
+local inZonePlayers = {}
 local locations = {
 	fishingZones = {
-		{loc = vector3(-1849.2, -1230.44, 13.02), radius = 30, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = 'Fishing Zone', enabled = true} },
-    	{loc = vector3(-3427.21, 967.53, 8.35),   radius = 30, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = 'Fishing Zone', enabled = true} },
-    	{loc = vector3(1313.22, 4229.9, 33.92),   radius = 30, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = 'Fishing Zone', enabled = true} },
-    	{loc = vector3(40.83, 848.72, 197.73),    radius = 30, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = 'Fishing Zone', enabled = true} },
+		{loc = vector3(-1849.2, -1230.44, 13.02), radius = 30, debug = true, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = 'Fishing Zone', enabled = true} },
+    	{loc = vector3(-3427.21, 967.53, 8.35),   radius = 30, debug = true, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = 'Fishing Zone', enabled = true} },
+    	{loc = vector3(1313.22, 4229.9, 33.92),   radius = 30, debug = true, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = 'Fishing Zone', enabled = true} },
+    	{loc = vector3(40.83, 848.72, 197.73),    radius = 30, debug = true, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = 'Fishing Zone', enabled = true} },
 	},
 	illegalFishingZones = {
 		{loc = vector3(1788.64, -3525.29, 0.54), radius = 250, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = 'Illegal Fishing Zone', enabled = false} },
@@ -22,6 +21,9 @@ local locations = {
 	},
 	shopLocation = {
 		{loc = vector4(1314.10, 4282.58, 33.91, 240.26), ped = 's_m_y_dealer_01', enabled = true, blipData = {sprite = 403, scale = 0.55, color = 2, label = 'Fishing Shop', enabled = true} },
+	},
+	breakDown = {
+		{loc = vector3(1088.14, -2002.14, 30.88), blipData = {sprite = 403, scale = 0.55, color = 2, label = 'Material Breakdown', enabled = true}}
 	}
 }
 
@@ -31,16 +33,15 @@ end)
 
 local stores = {
 	fishShop = { -- what the shop sells
-        {name = 'fishingpole', price = 1000, amount = 1},
-        {name = 'worms', price = 25, amount = 50},
-	    {name = 'spinnerbait', price = 25, amount = 50},
-	    {name = 'softplasticbait', price = 25, amount = 50},
-	    {name = 'plugbait', price = 25, amount = 50},
-	    {name = 'magnet', price = 25, amount = 50},
-	    {name = 'magnetpole', price = 10, amount = 1},
-        {name = 'illegalpole', price = 10000, amount = 1},
+		fishingpole = 1000,
+		worms = 25,
+		spinnerbait = 25,
+        softplasticbait = 25,
+		plugbait = 25,
+		magnet = 25,
+		magnetpole = 1000,
+		illegalpole = 10000,
     },
-
 	fishSales = { -- what the fish buyer buys
         flounder          = 50,
         reddrum           = 50,
@@ -117,6 +118,25 @@ RegisterNetEvent('md-fishing:server:sellFish', function(fish, loc)
 		end
 	else
 		ps.notify(src, 'You Have No '.. ps.getLabel(fish), 'error')
+	end
+end)
+
+RegisterNetEvent('md-fishing:server:buyFishGear', function(loc, item, data)
+	local src = source
+	if not ps.checkDistance(src, locations['shopLocation'][loc].loc, 3.5) then
+		ps.notify('You are not close enough', 'error')
+		return
+	end
+	if not stores['fishShop'][item] then
+		ps.notify('Invalid item', 'error')
+		return
+	end
+	local price = stores['fishShop'][item] * data.amount
+	if ps.removeMoney(src, data.type, price) then
+		ps.addItem(src, item, data.amount)
+		ps.notify('You bought ' .. data.amount .. ' ' .. ps.getLabel(item) .. ' for $' .. price, 'success')
+	else
+		ps.notify('You do not have enough money', 'error')
 	end
 end)
 
@@ -225,8 +245,32 @@ local breakDown = {
 		},
 }
 
-local activeFishers = {}
-local inZonePlayers = {}
+ps.registerCallback('md-fishing:server:getBreakdown', function(source, location)
+	local src = source
+	if not ps.checkDistance(src, locations['breakDown'][location].loc, 3.5) then
+		ps.notify(src, 'You Are Not Where You Should Be', 'error')
+		return
+	end
+	return breakDown
+end)
+
+RegisterNetEvent('md-fishing:server:breakDownRustys', function(loc, item)
+	local src = source
+	if not ps.checkDistance(src, locations['breakDown'][loc].loc, 3.0) then
+		ps.notify(src, 'Youre to far', 'error')
+		return
+	end
+	if not breakDown[item] then
+		ps.notify(src, 'invalid item', 'error')
+		return
+	end
+	if ps.removeItem(src, item, 1) then
+		local itemReward = breakDown[item]['items'][math.random(1, #breakDown[item]['items'])]
+		local itemAmount = math.random(breakDown[item]['amount'].min, breakDown[item]['amount'].max)
+		ps.addItem(src, itemReward, itemAmount)
+	end
+end)
+
 
 RegisterNetEvent('md-fishing:server:inZone', function(locationType, location)
 	local src = source
@@ -260,6 +304,15 @@ local function getPoleType(pole)
 	return nil
 end
 
+local function getWaitTimer(identifier, poleType)
+	local levels = MySQL.query.await('SELECT levels FROM mdfishing2 WHERE citizenid = ?', { identifier })
+	if not levels[1] then return Config.Levels[0].time end
+	local lvl = json.decode(levels[1].levels)
+	if not lvl[poleType] then return Config.Levels[0].time end
+	return Config.Levels[lvl[poleType].level].time or Config.Levels[0].time
+end
+
+local poles = {'fishingpole', 'magnetpole', 'illegalpole'}
 for k, v in pairs (poles) do
 	ps.createUseable(v, function(source, item)
 		local src = source
@@ -272,33 +325,38 @@ for k, v in pairs (poles) do
 		end
 		if not inZonePlayers[identifier] then
 			ps.notify(src, 'You Are Not In A Fishing Zone', 'error')
+			TriggerClientEvent('md-fishing:client:stopfishing', src)
 			return
 		end
 		if v == 'fishingpole' or v == 'magnetpole' then
 			if inZonePlayers[identifier].type ~= 'fishingZones' then
 				ps.notify(src, 'You Are Not In A Fishing Zone', 'error')
+				TriggerClientEvent('md-fishing:client:stopfishing', src)
 				return
 			end
 			local checkDistance = #(GetEntityCoords(GetPlayerPed(src)) - locations.fishingZones[inZonePlayers[identifier].loc].loc)
 			if checkDistance > locations.fishingZones[inZonePlayers[identifier].loc].radius then
 				ps.notify(src, 'You Left The Fishing Zone', 'error')
 				inZonePlayers[identifier] = nil
+				TriggerClientEvent('md-fishing:client:stopfishing', src)
 				return
 			end
 
 			activeFishers[identifier] = {pole = v, location = inZonePlayers[identifier].loc, type = 'fishingZones', fishingType = getPoleType(v)}
-			TriggerClientEvent('md-fishing:client:fishing', src, v)
+			TriggerClientEvent('md-fishing:client:fishing', src, getWaitTimer(identifier, getPoleType(v)))
 			return
 		end
 
 		if v == 'illegalpole' then
 			if inZonePlayers[identifier].type ~= 'illegalFishingZones' then
 				ps.notify(src, 'You Are Not In An Illegal Fishing Zone', 'error')
+				TriggerClientEvent('md-fishing:client:stopfishing', src)
 				return
 			end
 			local checkDistance = #(GetEntityCoords(GetPlayerPed(src)) - locations.illegalFishingZones[inZonePlayers[identifier].loc].loc)
 			if checkDistance > locations.illegalFishingZones[inZonePlayers[identifier].loc].radius then
 				ps.notify(src, 'You Left The Illegal Fishing Zone', 'error')
+				TriggerClientEvent('md-fishing:client:stopfishing', src)
 				inZonePlayers[identifier] = nil
 				return
 			end
@@ -310,10 +368,11 @@ for k, v in pairs (poles) do
 			local lvl = json.decode(levels[1].levels)
 			if lvl.illegal.level < Config.StarIllLvl then
 				ps.notify(src, 'You Need To Be Level ' .. Config.StarIllLvl .. ' In Fishing To Fish Here', 'error')
+				TriggerClientEvent('md-fishing:client:stopfishing', src)
 				return
 			end
 			activeFishers[identifier] = {pole = v, location = inZonePlayers[identifier].loc, type = 'illegalFishingZones', fishingType = getPoleType(v)}
-			TriggerClientEvent('md-fishing:client:fishing', src, v)
+			TriggerClientEvent('md-fishing:client:fishing', src,  getWaitTimer(identifier, getPoleType(v)))
 			return
 		end
 	end)
@@ -359,6 +418,7 @@ RegisterServerEvent('md-fishing:server:givefish', function()
 	end
 	if not activeFishers[identifier] then
 		ps.notify(src, 'You Are Not Fishing', 'error')
+		TriggerClientEvent('md-fishing:client:stopfishing', src)
 		return
 	end
 	if not inZonePlayers[identifier] then
@@ -387,38 +447,53 @@ RegisterServerEvent('md-fishing:server:givefish', function()
 	end
 end)
 
+RegisterServerEvent('md-fishing:server:stopFishing', function()
+	local src = source
+	local identifier = ps.getIdentifier(src)
+	if activeFishers[identifier] then
+		activeFishers[identifier] = nil
+		TriggerClientEvent('md-fishing:client:stopfishing', src)
+		ps.notify(src, 'You Stopped Fishing', 'error')
+	end
+end)
 
-------------------------------------------------------
-RegisterNetEvent('md-fishing:server:fishchum', function()
+RegisterServerEvent('md-fishing:server:stopFishingNoAlert', function()
+	local src = source
+	local identifier = ps.getIdentifier(src)
+	if activeFishers[identifier] then
+		activeFishers[identifier] = nil
+		TriggerClientEvent('md-fishing:client:stopfishing', src)
+	end
+end)
+
+RegisterNetEvent('md-fishing:server:fishchum', function(location)
     local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-	local info = Player.PlayerData.charinfo
-	local chumMake = {
-		flounder = 80,
-		reddrum = 80,
-		tunafish = 80,
-		steelhead = 80,
-		bluefish = 80,
-		halibut = 80,
-		catfish = 80,
-		whitebass = 80,
-		salmon = 80,
-		largemouthbass = 80,
-		panfish = 80,
-		trout = 80,
+	if not ps.checkDistance(src, locations['chumMaker'][location].loc, 3.5) then
+		ps.notify(src, 'You are not close enough', 'error')
+		return
+	end
+	local chumMake = { -- % of the amount of fish will be turn to chum, example 100 fish = 90
+		flounder = 0.8,
+		reddrum = 0.8,
+		tunafish = 0.8,
+		steelhead = 0.8,
+		bluefish = 0.8,
+		halibut = 0.8,
+		catfish = 0.8,
+		whitebass = 0.8,
+		salmon = 0.8,
+		largemouthbass = 0.8,
+		panfish = 0.8,
+		trout = 0.8,
 	}
 	local amount = 0
     for k, v in pairs(chumMake) do
-        local item = Player.Functions.GetItemByName(k)
-        if item and item.amount > 0 then
-			local allow = math.random(1,100) 
-			if v <= allow then
-				amount = amount + item.amount
-            	if RemoveItem(src, k, item.amount) then
-					AddItem(src,"chum", item.amount)
-				end
-			else
+        local count = ps.getItemCount(src, k)
+		if count > 0 then
+			if ps.removeItem(src, k, count) then
+				amount = math.floor(amount + (count * v))
 			end
 		end
 	end
+	ps.addItem(src, 'chum', amount)
 end)

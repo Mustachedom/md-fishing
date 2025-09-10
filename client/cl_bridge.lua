@@ -1,5 +1,4 @@
 local minigametype = Config.minigametype
-local dispatch = Config.Dispatch
 
 function minigame()
 	local time = 0
@@ -79,53 +78,6 @@ function minigame()
 	else
 		print"^1 SCRIPT ERROR: Md-Drugs set your minigame with one of the options!"
 	end
-end
-
-
-function PoliceCall(chance)
-	local math = math.random(1,100)
-	if math <= chance then
-		if dispatch == 'ps' then
-			exports['ps-dispatch']:SuspiciousActivity()
-		elseif dispatch == 'cd' then
-			local data = exports['cd_dispatch']:GetPlayerInfo()
-			TriggerServerEvent('cd_dispatch:AddNotification', {
-				job_table = {'police', }, 
-				coords = data.coords,
-				title = '420-69 Drug Sale',
-				message = 'A '..data.sex..' robbing a store at '..data.street, 
-				flash = 0,
-				unique_id = data.unique_id,
-				sound = 1,
-				blip = {
-					sprite = 431, 
-					scale = 1.2, 
-					colour = 3,
-					flashes = false, 
-					text = '420-69 Drug Sale',
-					time = 5,
-					radius = 0,
-				}
-			})
-		elseif	dispatch == 'core' then
-			exports['core_dispatch']:addCall("420-69", "Illegal Poaching", {
-				{icon="fa-ruler", info="4.5 MILES"},
-				}, {GetEntityCoords(PlayerPedId())}, "police", 3000, 11, 5 )
-		elseif dispatch == 'aty' then 
-			exports["aty_dispatch"]:SendDispatch('Illgeal Poaching', '420-69', 40, {'police'})
-		elseif dispatch == 'qs' then
-			exports['qs-dispatch']:SuspiciousActivity()
-		else
-			print('Congrats, You Choose 0 of the options :)')	
-		end
-	else
-	end
-end
-
-function GetCops(number)
-	if number == 0 then return true end
-	local amount = lib.callback.await('md-fishing:server:GetCoppers', false)
-	if amount >= number then return true else ps.notify('You Need '.. number - amount .. ' More Cops To Do This', 'error')  end
 end
 
 function Freeze(entity, toggle, head)

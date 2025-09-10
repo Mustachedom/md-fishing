@@ -1,0 +1,3 @@
+Lang = {}
+
+return Lang
