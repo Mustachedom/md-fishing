@@ -2,8 +2,7 @@
 TriggerServerEvent('md-fishing:server:checksql')
 
 local function found()
-	ps.notify("You found something!" , 'success')
-	TriggerEvent('InteractSound_CL:PlayOnOne','fishsplash', 50.0)
+	ps.notify(ps.lang('Fishing.found') , 'success')
 	FreezeEntityPosition(PlayerPedId(), true)
 	Wait(500)
 	FreezeEntityPosition(PlayerPedId(), false)
@@ -27,6 +26,9 @@ local function initScript()
 
 	for k, v in pairs (zoneLocations.fishingZones) do
 		if not v.enabled then goto continue end
+		if v.blipData and v.blipData.enabled then
+			createBlip(v.loc, v.blipData)
+		end
 		local fishingZones = ps.zones.sphere({
 			name = 'fishingZone' .. k,
 			coords = v.loc,
@@ -44,6 +46,9 @@ local function initScript()
 
 	for k, v in pairs (zoneLocations.illegalFishingZones) do
 		if not v.enabled then goto continue end
+		if v.blipData and v.blipData.enabled then
+			createBlip(v.loc, v.blipData)
+		end
 		local illegalFishingZones = ps.zones.sphere({
 			name = 'illegalFishingZone' .. k,
 			coords = v.loc,
@@ -68,16 +73,16 @@ local function initScript()
 		end
 		ps.entityTarget(peds[#peds], {
 			{
-				icon = 'fas fa-fish',
-				label = 'Sell Your Fish',
+				icon = ps.lang('Targets.fishBuyer.icon'),
+				label = ps.lang('Targets.fishBuyer.label'),
 				action = function()
 					local itemList = ps.callback('md-fishing:server:getStores', 'fishSales', k)
 					if not itemList then return end
 					local menu = {}
 					menu[#menu + 1] = {
-						title = 'Sell All',
-						icon = 'fas fa-donate',
-						description = 'Sell all fish for their set prices',
+						title = ps.lang('Targets.fishBuyer.sell.label'),
+						icon = ps.lang('Targets.fishBuyer.sell.icon'),
+						description = ps.lang('Targets.fishBuyer.sell.description'),
 						action = function()
 							TriggerServerEvent('md-fishing:server:sellFish', 'all', k)
 						end
@@ -86,13 +91,13 @@ local function initScript()
 						menu[#menu + 1] = {
 							title = ps.getLabel(item),
 							icon = ps.getImage(item),
-							description = 'Sell for $' .. price .. ' each',
+							description = ps.lang('Targets.fishBuyer.description', price),
 							action = function()
 								TriggerServerEvent('md-fishing:server:sellFish', item, k)
 							end
 						}
 					end
-					ps.menu('Sell Fish', 'Sell Fish', menu)
+					ps.menu(ps.lang('Targets.fishBuyer.menuTitle'), ps.lang('Targets.fishBuyer.menuTitle'), menu)
 				end,
 			},
 		})
@@ -116,19 +121,24 @@ local function initScript()
 					for itemName, price in pairs (itemList) do
 						menu[#menu + 1] = {
 							title = ps.getLabel(itemName),
-							description = '$' .. price,
+							description = ps.lang('Info.currency').. price,
 							icon = ps.getImage(itemName),
 							action = function()
-								local input = ps.input('Purchase ' .. ps.getLabel(itemName), {
-									{type = 'number', min = 0, max = v.amount, title = 'How Many To Buy'},
-									{type = 'select', options = {{label = 'Cash', value = 'cash'}, {label = 'Bank', value = 'bank'}}, title = 'Payment Type'}
+								local input = ps.input(ps.lang('Targets.shopLocs.input.title', ps.getLabel(itemName)), {
+									{type = 'number', min = 0, max = v.amount, title = ps.lang('Targets.shopLocs.input.field1title')},
+									{type = 'select', title = ps.lang('Targets.shopLocs.input.field2title'),
+										options = {
+											{label = ps.lang('Targets.shopLocs.input.field2option1'), value = 'cash'},
+											{label = ps.lang('Targets.shopLocs.input.field2option2'), value = 'bank'}
+										}
+									}
 								})
 								if input and not input[1] then return end
 								TriggerServerEvent('md-fishing:server:buyFishGear', k, itemName, {amount = input[1], type = input[2] or 'cash'})
 							end
 						}
 					end
-					ps.menu('Fish Shop', 'Fish Shop', menu)
+					ps.menu(ps.lang('Targets.shopLocs.menuTitle'), ps.lang('Targets.shopLocs.menuTitle'), menu)
 				end,
 			},
 		})
@@ -143,13 +153,14 @@ local function initScript()
 		end
 		ps.entityTarget(peds[#peds], {
 			{
-				label = 'Make Chum',
-				icon = 'fas fa-shopping-basket',
+				label = ps.lang('Targets.chumMaker.label'),
+				icon = ps.lang('Targets.chumMaker.icon'),
 				action = function()
-					local input = ps.input('Confirm You Want To Make Chum ', {
+					local input = ps.input(ps.lang('Targets.chumMaker.input.title'), {
 						{
-							type = 'select', options = {{label = 'Yes', value = true}, {label = 'No', value = false}}, title = 'Confirm',
-							description = 'This will remove all your fish'
+							type = 'select', options = {{label = ps.lang('Info.yes'), value = true}, {label = ps.lang('Info.no'), value = false}},
+							title = ps.lang('Targets.chumMaker.input.field1title'),
+							description = ps.lang('Targets.chumMaker.input.description')
 						}
 					})
 					if input and not input[1] then return end
@@ -165,22 +176,22 @@ local function initScript()
 		end
 		ps.boxTarget('matbreakdown' ..k, v.loc, {length = 1.0, width = 1.0, height = 1.0}, {
 			{
-				label = 'Break Down',
-				icon = 'fas fa-shopping-basket',
+				label = ps.lang('Targets.breakDown.label'),
+				icon = ps.lang('Targets.breakDown.icon'),
 				action = function()
 					local itemList = ps.callback('md-fishing:server:getBreakdown', k)
 					local menu = {}
 					for item, values in pairs (itemList) do
 						menu[#menu + 1] = {
 							title = ps.getLabel(item),
-							description = 'Break Down ' .. ps.getLabel(item),
+							description = ps.lang('Targets.breakDown.input.description', ps.getLabel(item)),
 							action = function()
-								if not ps.progressbar('Breaking Down ' .. ps.getLabel(item), 4000, 'weld') then return end
+								if not ps.progressbar(ps.lang('Targets.breakDown.progressbar', ps.getLabel(item)), 4000, 'weld') then return end
 								TriggerServerEvent('md-fishing:server:breakDownRustys', k, item)
 							end
 						}
 					end
-					ps.menu('Break Down Materials', 'Break Down Materials', menu)
+					ps.menu(ps.lang('Targets.breakDown.menuTitle'), ps.lang('Targets.breakDown.menuTitle'), menu)
 				end
 			}
 		})
@@ -218,12 +229,12 @@ end)
 local fishing = false
 RegisterNetEvent('md-fishing:client:fishing', function(Timer)
 	if IsPedInAnyVehicle(PlayerPedId(), false) then
-		ps.notify("You can't fish in a vehicle!", 'error')
+		ps.notify(ps.lang('Fails.inVehicle'), 'error')
 		TriggerServerEvent('md-fishing:server:stopFishing')
 		return
 	end
 	if fishing then
-		ps.notify("You are already fishing!", 'error')
+		ps.notify(ps.lang('Fails.alreadyFishing'), 'error')
 		return
 	end
 	fishing = true
@@ -249,7 +260,7 @@ RegisterNetEvent('md-fishing:client:fishing', function(Timer)
 		if minigame() then
 			TriggerServerEvent('md-fishing:server:catchFish')
 		else
-			ps.notify("You failed to catch anything!", 'error')
+			ps.notify(ps.lang('Fails.failedCatch'), 'error')
 		end
 		if not Config.AutoRecast then
 			fishing = false
@@ -270,21 +281,21 @@ RegisterCommand('anchor', function()
     if IsPedInAnyBoat(ped) then
         local boat = GetVehiclePedIsIn(ped, true)
         if not IsEntityInWater(boat) then
-            ps.notify("Your boat is not in the water!", 'error')
+            ps.notify(ps.lang('anchor.notInWater'), 'error')
             return
         end
         if anchor then
             SetBoatAnchor(boat, false)
-            ps.notify("Unanchored", 'success')
+            ps.notify(ps.lang('anchor.unanchored'), 'success')
             anchor = false
         else
             SetBoatAnchor(boat, true)
             SetForcedBoatLocationWhenAnchored(boat, true)
             SetBoatFrozenWhenAnchored(boat, true)
-            ps.notify("Anchored", 'success')
+            ps.notify(ps.lang('anchor.anchored') 'success')
             anchor = true
         end
     else
-        ps.notify("Where is your boat?")
+        ps.notify(ps.lang('anchor.noBoat'))
     end
 end, false)
