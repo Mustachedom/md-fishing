@@ -485,17 +485,6 @@
     }
 },
 
-['treasurechest'] = {
-    label = 'Treasure Chest',
-    weight = 300,
-    stack = true,
-    close = false,
-    description = "Who knows what could be inside!?",
-    client = {
-        image = 'treasurechest.png'
-    }
-},
-
 ['trout'] = {
     label = 'Trout',
     weight = 300,
