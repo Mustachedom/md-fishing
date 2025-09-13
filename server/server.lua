@@ -107,7 +107,7 @@ RegisterNetEvent('md-fishing:server:sellFish', function(fish, loc)
 				local total = itemCount * v
 				if ps.removeItem(src, k, itemCount) then
 					ps.addMoney(src, 'cash', total, 'sold-fish')
-					ps.notify(src, ps.lang('Shops.sold', itemCount, ps.getLabel(k), ps.lang('Info.currency'), total))
+					ps.notify(src, ps.lang('Shops.sold', itemCount, ps.getItemLabel(k), ps.lang('Info.currency'), total))
 				end
 			end
 		end
@@ -119,10 +119,10 @@ RegisterNetEvent('md-fishing:server:sellFish', function(fish, loc)
 		local total = itemCount * stores.fishSales[fish]
 		if ps.removeItem(src, fish, itemCount) then
 			ps.addMoney(src, 'cash', total, 'sold-fish')
-			ps.notify(src, ps.lang('Shops.sold', itemCount, ps.getLabel(fish), ps.lang('Info.currency'), total), 'success')
+			ps.notify(src, ps.lang('Shops.sold', itemCount, ps.getItemLabel(fish), ps.lang('Info.currency'), total), 'success')
 		end
 	else
-		ps.notify(src, ps.lang('Shops.noFish', ps.getLabel(fish)), 'error')
+		ps.notify(src, ps.lang('Shops.noFish', ps.getItemLabel(fish)), 'error')
 	end
 end)
 
@@ -139,7 +139,7 @@ RegisterNetEvent('md-fishing:server:buyFishGear', function(loc, item, data)
 	local price = stores['fishShop'][item] * data.amount
 	if ps.removeMoney(src, data.type, price) then
 		ps.addItem(src, item, data.amount)
-		ps.notify(src, ps.lang('Shops.bought', data.amount, ps.getLabel(item), ps.lang('Info.currency'), price), 'success')
+		ps.notify(src, ps.lang('Shops.bought', data.amount, ps.getItemLabel(item), ps.lang('Info.currency'), price), 'success')
 	else
 		ps.notify(src, ps.lang('Fails.tooPoor',ps.lang('Info.currency'), price, data.type), 'error')
 	end

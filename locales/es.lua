@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'No puedes usar esta caña aquí',
     noLevel = 'No tienes datos de pesca, por favor, vuelve a iniciar sesión',
     wrongLevel = 'Necesitas ser nivel %s para pescar aquí',
-    found = '¡Tienes una mordida!'
+    found = '¡Tienes una mordida!',
+    inZone = 'Ahora estás en una zona de pesca',
+    outZone = 'Ahora estás fuera de la zona de pesca',
 }
 
 Lang.Targets = {

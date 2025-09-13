@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'Dis powe no wook hewe... twy anotha one, pwease~ 🎣❌',
     noLevel = 'No fishy data? Pwease we-wog, snuggles~ 💤🔁',
     wrongLevel = 'You need to be wevew %s to fish hewe... gwow up fiwst~ 🌱🎣',
-    found = 'OMG!!! YOU GOT A BITE!!! 🐠💖 REEL IT IN~!!!'
+    found = 'OMG!!! YOU GOT A BITE!!! 🐠💖 REEL IT IN~!!!',
+    inZone = 'You are now in a fishy zone~ 🐠💖',
+    outZone = 'You are now out of the fishy zone~ 🐠💔'
 }
 
 Lang.Targets = {

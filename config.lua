@@ -4,7 +4,7 @@ ps.loadLangs("en") -- set your languages folder name here
 
 Config.AutoRecast = true -- if false players will have to reclick their pole for every catch
 Config.FreezePlayerWhileFishing = true -- keeps players from moving while fishing 
-
+Config.AlertInZone = true -- alerts players when they enter a fishing zone
 ---------------------------------- BRIDGE 
 Config.Minigames = {
     ps_circle =     {amount = 2,     speed = 8,},

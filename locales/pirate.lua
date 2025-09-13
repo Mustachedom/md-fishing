@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'That pole? Useless here — switch gear or switch yer luck!',
     noLevel = 'No fishin’ log? Re-log, ye glitch-ridden deck swab!',
     wrongLevel = 'Ye must be level %s to cast here — prove yer salt, greenhorn!',
-    found = 'YARRR! A BITE ON THE LINE — REEL IT IN, YE MAD SEA DOG!'
+    found = 'YARRR! A BITE ON THE LINE — REEL IT IN, YE MAD SEA DOG!',
+    inZone = 'Ye be in the fishin’ grounds now — time to haul in some treasure!',
+    outZone = 'Ye be out o’ the fishin’ grounds — find new waters, or be fish food!',
 }
 
 Lang.Targets = {

@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'Hi fen lost mindok — You cannot use this pole here',
     noLevel = 'Hi lost data — You have no fishing data, re-log',
     wrongLevel = 'Hi need %s — You need to be level %s to fish here',
-    found = 'Fen kos mindok! — You got a bite!'
+    found = 'Fen kos mindok! — You got a bite!',
+    inZone = 'Hi fen thur — You are now in fishing zone',
+    outZone = 'Hi lost thur — You are now out of fishing zone',
 }
 
 Lang.Targets = {

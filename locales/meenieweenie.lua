@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'Wrong pole, dumbass. Did you think this was IKEA? Read the fucking manual.',
     noLevel = 'No fishing data? Re-log. And maybe re-think your life choices while you’re at it.',
     wrongLevel = 'You need to be level %s to fish here — but your skill level is currently “potato”. Come back when you’re relevant.',
-    found = 'Oh wow, a bite! Don’t fuck it up this time, champ.'
+    found = 'Oh wow, a bite! Don’t fuck it up this time, champ.',
+    inZone = 'You’re now in the fishing zone — time to catch some fish!',
+    outZone = 'You’re now out of the fishing zone — time to find more water!',
 }
 
 Lang.Targets = {

@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'Dis powa? Nuh-uh — notta worky hewe! Twy anotha, yoo silly gungan!',
     noLevel = 'Mesa no sees ya fishen data — re-loggen, yoo glitchy oaf!',
     wrongLevel = 'Yousa needen level %s to fishen hewe — graw up fawst, lil’ tadpolen!',
-    found = 'WOWEE!!! BIG BITE-EN!!! REEL-EN IT IN, QUICK-QUICK!!!'
+    found = 'WOWEE!!! BIG BITE-EN!!! REEL-EN IT IN, QUICK-QUICK!!!',
+    inZone = 'Yousa now inna fishen zone — splashy time, woohoo!',
+    outZone = 'Yousa now outta fishen zone — time to findden mo wata!',
 }
 
 Lang.Targets = {

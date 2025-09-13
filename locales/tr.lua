@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'Bu oltayı burada kullanamazsın',
     noLevel = 'Hiçbir balık verin yok, lütfen tekrar giriş yap',
     wrongLevel = 'Burada balık tutmak için seviye %s olman lazım',
-    found = 'Iskarmoz oldu!'
+    found = 'Iskarmoz oldu!',
+    inZone = 'Şimdi bir balık bölgesindesin',
+    outZone = 'Şimdi balık bölgesinin dışındasın',
 }
 
 Lang.Targets = {

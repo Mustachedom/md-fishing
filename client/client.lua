@@ -34,9 +34,15 @@ local function initScript()
 			coords = v.loc,
 			radius = v.radius,
 			onEnter = function()
+				if Config.AlertInZone then
+					ps.notify(ps.lang('Fishing.inZone'), 'success')
+				end
 				TriggerServerEvent('md-fishing:server:inZone', 'fishingZones', k)
 			end,
 			onExit = function()
+				if Config.AlertInZone then
+					ps.notify(ps.lang('Fishing.outZone'), 'error')
+				end
 				TriggerServerEvent('md-fishing:server:outZone')
 			end,
 			debug = v.debug,
@@ -54,9 +60,15 @@ local function initScript()
 			coords = v.loc,
 			radius = v.radius,
 			onEnter = function()
+				if Config.AlertInZone then
+					ps.notify(ps.lang('Fishing.inZone'), 'success')
+				end
 				TriggerServerEvent('md-fishing:server:inZone', 'illegalFishingZones', k)
 			end,
 			onExit = function()
+				if Config.AlertInZone then
+					ps.notify(ps.lang('Fishing.outZone'), 'error')
+				end
 				TriggerServerEvent('md-fishing:server:outZone')
 			end,
 			debug = v.debug,

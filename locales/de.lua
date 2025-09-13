@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'Du kannst diese Angelrute hier nicht benutzen',
     noLevel = 'Du hast keine Angel-Daten – bitte melde dich erneut an',
     wrongLevel = 'Du musst Level %s sein, um hier zu angeln',
-    found = 'Du hast einen Biss!'
+    found = 'Du hast einen Biss!',
+    inZone = 'Du bist jetzt in einer Angelzone',
+    outZone = 'Du bist jetzt außerhalb der Angelzone',
 }
 
 Lang.Targets = {
