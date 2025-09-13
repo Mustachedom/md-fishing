@@ -207,16 +207,6 @@ for k, v in pairs (poles) do
 	end)
 end
 
-------------------------------- creates a table on players first log in with script
-RegisterServerEvent('md-fishing:server:checksql', function()
-	local src = source
-	local check = MySQL.query.await('SELECT citizenid FROM md_fishing WHERE citizenid = ?', { ps.getIdentifier(src) })
-	if not check[1] then
-		MySQL.insert('INSERT INTO md_fishing (citizenid, levels, name) VALUES (?, ?,?)', {
-			ps.getIdentifier(src),json.encode({fishing = {level = 0, xp = 0}, illegal = {level = 0, xp = 0}, magnet = {level = 0, xp = 0}}), ps.getPlayerName(src)
-    	})
-	end
-end)
 
 --------------------------------- catch fish logic
 
@@ -350,3 +340,29 @@ ps.registerCommand('FishingReFormater', {
 		MySQL.query.await('DELETE FROM mdfishing WHERE citizenid = ?', {v.citizenid})
 	end
 end)
+
+local function checkSQL(src)
+	local identifier = ps.getIdentifier(src)
+	local check = MySQL.query.await('SELECT citizenid FROM md_fishing WHERE citizenid = ?', { identifier })
+	if not check[1] then
+		MySQL.insert('INSERT INTO md_fishing (citizenid, levels, name) VALUES (?, ?,?)', {
+			identifier,json.encode({fishing = {level = 0, xp = 0}, illegal = {level = 0, xp = 0}, magnet = {level = 0, xp = 0}}), ps.getPlayerName(src)
+    	})
+	end
+end
+
+local function dropPlayer(src)
+	local identifier = ps.getIdentifier(src)
+	if activeFishers[identifier] then
+		activeFishers[identifier] = nil
+		TriggerClientEvent('md-fishing:client:stopfishing', src)
+	end
+	if inZonePlayers[identifier] then
+		inZonePlayers[identifier] = nil
+	end
+end
+
+RegisterNetEvent('QBCore:Server:OnPlayerLoaded', function() checkSQL(source) end)
+AddEventHandler('esx:playerLoaded', function(source) checkSQL(source) end)
+AddEventHandler('esx:playerDropped', function(source) dropPlayer(source) end)
+AddEventHandler('QBCore:Server:OnPlayerUnload', function(source) dropPlayer(source) end)

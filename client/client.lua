@@ -1,6 +1,4 @@
 
-TriggerServerEvent('md-fishing:server:checksql')
-
 local function found()
 	ps.notify(ps.lang('Fishing.found') , 'success')
 	FreezeEntityPosition(PlayerPedId(), true)
