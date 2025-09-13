@@ -270,7 +270,7 @@ RegisterNetEvent('md-fishing:client:fishing', function(Timer)
 		end
 		found()
 		if minigame() then
-			TriggerServerEvent('md-fishing:server:catchFish')
+			TriggerServerEvent('md-fishing:server:givefish')
 		else
 			ps.notify(ps.lang('Fails.failedCatch'), 'error')
 		end
