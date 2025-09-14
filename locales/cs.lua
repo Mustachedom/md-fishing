@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'Tento prut zde nelze použít',
     noLevel = 'Nemáte žádná rybářská data, prosím, znovu se přihlašte',
     wrongLevel = 'Potřebujete být úrovně %s, abyste zde mohli rybařit',
-    found = 'Máte bitevní!'
+    found = 'Máte bitevní!',
+    inZone = 'Nyní jste v rybářské zóně',
+    outZone = 'Nyní jste mimo rybářskou zónu',
 }
 
 Lang.Targets = {

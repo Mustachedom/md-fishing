@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'Você não pode usar essa vara aqui',
     noLevel = 'Você não tem dados de pesca, por favor, entre de novo',
     wrongLevel = 'Você precisa ser nível %s pra pescar aqui',
-    found = 'Você teve uma fisgada!'
+    found = 'Você teve uma fisgada!',
+    inZone = 'Você está agora em uma zona de pesca',
+    outZone = 'Você está agora fora da zona de pesca',
 }
 
 Lang.Targets = {

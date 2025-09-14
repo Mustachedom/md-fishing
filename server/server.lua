@@ -1,79 +1,8 @@
 ps.versionCheck('md-fishing', 'https://raw.githubusercontent.com/Mustachedom/md-fishing/01f336f9cbbecb45dfe0d912887f1715663b3213/version.txt', 'https://github.com/Mustachedom/md-fishing/tree/01f336f9cbbecb45dfe0d912887f1715663b3213')
-local activeFishers = {} -- no touch
-local inZonePlayers = {} -- no touch
-local LevelUpAmount = 60 -- amount of fish required to level up
-local StarIllLvl = 5 -- level required of regular fishing to be allowed to start illegal fishing
-
-local locations = { 
-	fishingZones = {
-		{loc = vector3(-1849.2, -1230.44, 13.02), radius = 30, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = ps.lang('Labels.fishZoneBlip'), enabled = true} },
-    	{loc = vector3(-3427.21, 967.53, 8.35),   radius = 30, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = ps.lang('Labels.fishZoneBlip'), enabled = true} },
-    	{loc = vector3(1313.22, 4229.9, 33.92),   radius = 30, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = ps.lang('Labels.fishZoneBlip'), enabled = true} },
-    	{loc = vector3(40.83, 848.72, 197.73),    radius = 30, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = ps.lang('Labels.fishZoneBlip'), enabled = true} },
-	},
-	illegalFishingZones = {
-		{loc = vector3(1788.64, -3525.29, 0.54), radius = 250, debug = false, enabled = true, blipData = {sprite = 404, scale = 0.8, color = 2, label = ps.lang('Labels.illegalFishzoneBlip'), enabled = true} },
-		{loc = vector3(3190.5, -974.99, 0.37),   radius = 250, debug = false, enabled = true, blipData = {sprite = 404, scale = 0.8, color = 2, label = ps.lang('Labels.illegalFishzoneBlip'), enabled = false} },
-		{loc = vector3(1235.08, 7926.63, -1.26), radius = 250, debug = false, enabled = true, blipData = {sprite = 404, scale = 0.8, color = 2, label = ps.lang('Labels.illegalFishzoneBlip'), enabled = false} },
-		{loc = vector3(-3196.07, 2601.24, 1.33), radius = 250, debug = false, enabled = true, blipData = {sprite = 404, scale = 0.8, color = 2, label = ps.lang('Labels.illegalFishzoneBlip'), enabled = false} },
-	},
-	fishBuyers = {
-		{loc = vector4(-1814.64, -1194.00, 13.02, 238.98), ped = 'a_f_m_bevhills_02', enabled = true, blipData = {sprite = 272, scale = 0.8, color = 2, label = ps.lang('Labels.fishBuyerBlip'), enabled = true} },
-	},
-	chumMaker = {
-		{loc = vector4(1026.52, -3037.92, 8.69, 350.03), ped = 's_m_y_dealer_01', enabled = true, blipData = {sprite = 272, scale = 0.8, color = 2, label = ps.lang('Labels.chumMakerBlip'), enabled = true} },
-	},
-	shopLocation = {
-		{loc = vector4(1314.10, 4282.58, 33.91, 240.26), ped = 's_m_y_dealer_01', enabled = true, blipData = {sprite = 272, scale = 0.8, color = 2, label = ps.lang('Labels.shopLocationBlip'), enabled = true} },
-	},
-	breakDown = {
-		{loc = vector3(1088.14, -2002.14, 30.88), blipData = {sprite = 365, scale = 0.8, color = 2, label = ps.lang('Labels.breakDownBlip'), enabled = true}}
-	}
-}
 
 ps.registerCallback('md-fishing:server:getLocations', function(source)
 	return locations
 end)
-
-local stores = {
-	fishShop = { -- what the shop sells left is item | right is price
-		fishingpole = 1000,
-		worms = 25,
-		spinnerbait = 25,
-        softplasticbait = 25,
-		plugbait = 25,
-		magnet = 25,
-		magnetpole = 1000,
-		illegalpole = 10000,
-    },
-	fishSales = { -- what the fish buyer buys left is item | right is price
-        flounder          = 50,
-        reddrum           = 50,
-        tunafish          = 50,
-        bluefish          = 50,
-        halibut           = 50,
-        steelhead         = 50,
-        catfish           = 50,
-        whitebass         = 50,
-        salmon            = 50,
-        panfish           = 50,
-        trout             = 50,
-        tigershark        = 50,
-        groundshark       = 50,
-        goblinshark       = 50,
-        stripeddolphin    = 50,
-        largemouthbass    = 50,
-        chileandolphin    = 50,
-        atlanticdolphin   = 50,
-        belugawhale       = 50,
-        bluewhale         = 50,
-        narwhal           = 50,
-        spermwhale        = 50,
-        seaturtle         = 50,
-        tortoise          = 50,
-        leatherheadturtle = 50,
-	}
-}
 
 ps.registerCallback('md-fishing:server:getStores', function(source, type, location)
 	local src = source
@@ -107,7 +36,6 @@ RegisterNetEvent('md-fishing:server:sellFish', function(fish, loc)
 				local total = itemCount * v
 				if ps.removeItem(src, k, itemCount) then
 					ps.addMoney(src, 'cash', total, 'sold-fish')
-					ps.notify(src, ps.lang('Shops.sold', itemCount, ps.getLabel(k), ps.lang('Info.currency'), total))
 				end
 			end
 		end
@@ -119,10 +47,10 @@ RegisterNetEvent('md-fishing:server:sellFish', function(fish, loc)
 		local total = itemCount * stores.fishSales[fish]
 		if ps.removeItem(src, fish, itemCount) then
 			ps.addMoney(src, 'cash', total, 'sold-fish')
-			ps.notify(src, ps.lang('Shops.sold', itemCount, ps.getLabel(fish), ps.lang('Info.currency'), total), 'success')
+			ps.notify(src, ps.lang('Shops.sold', itemCount, ps.getItemLabel(fish), ps.lang('Info.currency'), total), 'success')
 		end
 	else
-		ps.notify(src, ps.lang('Shops.noFish', ps.getLabel(fish)), 'error')
+		ps.notify(src, ps.lang('Shops.noFish', ps.getItemLabel(fish)), 'error')
 	end
 end)
 
@@ -139,116 +67,11 @@ RegisterNetEvent('md-fishing:server:buyFishGear', function(loc, item, data)
 	local price = stores['fishShop'][item] * data.amount
 	if ps.removeMoney(src, data.type, price) then
 		ps.addItem(src, item, data.amount)
-		ps.notify(src, ps.lang('Shops.bought', data.amount, ps.getLabel(item), ps.lang('Info.currency'), price), 'success')
+		ps.notify(src, ps.lang('Shops.bought', data.amount, ps.getItemLabel(item), ps.lang('Info.currency'), price), 'success')
 	else
 		ps.notify(src, ps.lang('Fails.tooPoor',ps.lang('Info.currency'), price, data.type), 'error')
 	end
 end)
-
-local baitTypes = {
-	fishingpole = { -- the type of pole can use this bait
-		spinner = {-- key value is bait item name, the value array is the fish that bait can catch
-			"largemouthbass", "panfish", "trout"
-		},
-		softplastic = {
-			"catfish", "whitebass", "salmon"
-		},
-		plug = {
-			"steelhead", "bluefish", "halibut"
-		},
-		worms = {
-			"flounder", "reddrum", "tunafish"
-		},
-	},
-	magnetpole = {
-		magnet = {
-			"rustyak", "rustypistol", "rustyshotgun", "rustybike", "rustysafe", "copperpipe", "closedsafe", "sheetmetal", "rustysign", "rustytire",
-			"rustywheelchair", "rustychain", "rustyantenna", "rustyelectronickit", "rustyscanner", "rustyraspberrypi", "rustyusb", "rustyscrapmetal",
-		},
-	},
-	illegalpole = {
-		illegal = {
-			"tigershark", "groundshark", "goblinshark", "stripeddolphin", "chileandolphin", "atlanticdolphin",
-			"belugawhale", "bluewhale", "narwhal", "spermwhale", "seaturtle", "tortoise", "leatherheadturtle",
-		},
-	},
-}
-
-
-local breakDown = {
-	rustyak            = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"}, -- array of items to randomly give on breakdown | only chooses 1 item from the array
-		amount = {min = 1, max = 3} -- amount of the items above to give
-	},
-    rustypistol         = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    rustyshotgun	    = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    rustybike		    = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    rustysafe	        = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    copperpipe		    = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    closedsafe		    = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    sheetmetal		    = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    rustysign			= {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    rustytire			= {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    rustywheelchair	    = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    rustychain	        = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    rustyantenna        = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    rustyelectronickit  = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    rustyscanner	    = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    rustyraspberrypi    = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    rustyusb		    = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-    rustyscrapmetal     = {
-		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
-		amount = {min = 1, max = 3}
-	},
-}
 
 ps.registerCallback('md-fishing:server:getBreakdown', function(source, location)
 	local src = source
@@ -383,19 +206,9 @@ for k, v in pairs (poles) do
 	end)
 end
 
-------------------------------- creates a table on players first log in with script
-RegisterServerEvent('md-fishing:server:checksql', function()
-	local src = source
-	local check = MySQL.query.await('SELECT citizenid FROM md_fishing WHERE citizenid = ?', { ps.getIdentifier(src) })
-	if not check[1] then
-		MySQL.insert('INSERT INTO md_fishing (citizenid, levels, name) VALUES (?, ?,?)', {
-			ps.getIdentifier(src),json.encode({fishing = {level = 0, xp = 0}, illegal = {level = 0, xp = 0}, magnet = {level = 0, xp = 0}}), ps.getPlayerName(src)
-    	})
-	end
-end)
 
 --------------------------------- catch fish logic
-local timeouts = {}
+
 local function addRepToPlayer(identifier, poleType)
 	local levels = MySQL.query.await('SELECT levels FROM md_fishing WHERE citizenid = ?', { identifier })
 	if not levels[1] then return end
@@ -509,6 +322,10 @@ RegisterNetEvent('md-fishing:server:fishchum', function(location)
 			end
 		end
 	end
+	if amount <= 0 then
+		ps.notify(src, ps.lang('Shops.noFish', 'fish'), 'error')
+		return
+	end
 	ps.addItem(src, 'chum', amount)
 end)
  --- RUN THIS COMMAND BEFORE ANYONE JOINS THE SERVER. READ THE README FOR GODS SAKE THEN DELETE THIS COMMAND 
@@ -526,3 +343,29 @@ ps.registerCommand('FishingReFormater', {
 		MySQL.query.await('DELETE FROM mdfishing WHERE citizenid = ?', {v.citizenid})
 	end
 end)
+
+local function checkSQL(src)
+	local identifier = ps.getIdentifier(src)
+	local check = MySQL.query.await('SELECT citizenid FROM md_fishing WHERE citizenid = ?', { identifier })
+	if not check[1] then
+		MySQL.insert('INSERT INTO md_fishing (citizenid, levels, name) VALUES (?, ?,?)', {
+			identifier,json.encode({fishing = {level = 0, xp = 0}, illegal = {level = 0, xp = 0}, magnet = {level = 0, xp = 0}}), ps.getPlayerName(src)
+    	})
+	end
+end
+
+local function dropPlayer(src)
+	local identifier = ps.getIdentifier(src)
+	if activeFishers[identifier] then
+		activeFishers[identifier] = nil
+		TriggerClientEvent('md-fishing:client:stopfishing', src)
+	end
+	if inZonePlayers[identifier] then
+		inZonePlayers[identifier] = nil
+	end
+end
+
+RegisterNetEvent('QBCore:Server:OnPlayerLoaded', function() checkSQL(source) end)
+AddEventHandler('esx:playerLoaded', function(source) checkSQL(source) end)
+AddEventHandler('esx:playerDropped', function(source) dropPlayer(source) end)
+AddEventHandler('QBCore:Server:OnPlayerUnload', function(source) dropPlayer(source) end)

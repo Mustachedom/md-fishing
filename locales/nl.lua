@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'Je kunt deze hengel hier niet gebruiken',
     noLevel = 'Je hebt geen visgegevens, log opnieuw in',
     wrongLevel = 'Je moet niveau %s zijn om hier te vissen',
-    found = 'Je hebt een beet!'
+    found = 'Je hebt een beet!',
+    inZone = 'Je bent nu in een viszone',
+    outZone = 'Je bent nu buiten de viszone',
 }
 
 Lang.Targets = {

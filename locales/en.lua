@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'You Cant Use This Pole Here',
     noLevel = 'You Dont Have Any Fishing Data, Please Re-log',
     wrongLevel = 'You Need To Be Level %s To Fish Here',
-    found = 'You Got A Bite!'
+    found = 'You Got A Bite!',
+    inZone = 'You Are Now In A Fishing Zone',
+    outZone = 'You Are Now Out Of The Fishing Zone',
 }
 
 Lang.Targets = {

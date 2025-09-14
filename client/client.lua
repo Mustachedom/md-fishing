@@ -1,6 +1,4 @@
 
-TriggerServerEvent('md-fishing:server:checksql')
-
 local function found()
 	ps.notify(ps.lang('Fishing.found') , 'success')
 	FreezeEntityPosition(PlayerPedId(), true)
@@ -34,9 +32,15 @@ local function initScript()
 			coords = v.loc,
 			radius = v.radius,
 			onEnter = function()
+				if Config.AlertInZone then
+					ps.notify(ps.lang('Fishing.inZone'), 'success')
+				end
 				TriggerServerEvent('md-fishing:server:inZone', 'fishingZones', k)
 			end,
 			onExit = function()
+				if Config.AlertInZone then
+					ps.notify(ps.lang('Fishing.outZone'), 'error')
+				end
 				TriggerServerEvent('md-fishing:server:outZone')
 			end,
 			debug = v.debug,
@@ -54,9 +58,15 @@ local function initScript()
 			coords = v.loc,
 			radius = v.radius,
 			onEnter = function()
+				if Config.AlertInZone then
+					ps.notify(ps.lang('Fishing.inZone'), 'success')
+				end
 				TriggerServerEvent('md-fishing:server:inZone', 'illegalFishingZones', k)
 			end,
 			onExit = function()
+				if Config.AlertInZone then
+					ps.notify(ps.lang('Fishing.outZone'), 'error')
+				end
 				TriggerServerEvent('md-fishing:server:outZone')
 			end,
 			debug = v.debug,
@@ -163,7 +173,8 @@ local function initScript()
 							description = ps.lang('Targets.chumMaker.input.description')
 						}
 					})
-					if input and not input[1] then return end
+					if not input then return end
+					if not input[1] then return end
 					TriggerServerEvent('md-fishing:server:fishchum', k)
 				end
 			}
@@ -258,7 +269,7 @@ RegisterNetEvent('md-fishing:client:fishing', function(Timer)
 		end
 		found()
 		if minigame() then
-			TriggerServerEvent('md-fishing:server:catchFish')
+			TriggerServerEvent('md-fishing:server:givefish')
 		else
 			ps.notify(ps.lang('Fails.failedCatch'), 'error')
 		end

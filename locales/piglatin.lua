@@ -44,7 +44,9 @@ Anglay.Fishing = {
     wrongPole = 'Ouyay Antcay Otay Useay Ishthay Olepay Erehay',
     noLevel = 'Ouyay Ontday Avehay Anyay Ishingfay Ataday, Easeplay E-logray',
     wrongLevel = 'Ouyay Eednay Otay Ebay Evellay %say Otay Ishfay Erehay',
-    found = 'Ouyay Otgay Aay Itebay!'
+    found = 'Ouyay Otgay Aay Itebay!',
+    inZone = 'Ouyay Areay Oinay Aay Ishingfay Oneday',
+    outZone = 'Ouyay Areay Otnay Inay Aay Ishingfay Oneday',
 }
 
 Anglay.Targets = {

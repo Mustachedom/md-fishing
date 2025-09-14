@@ -1,5 +1,5 @@
 
-CREATE TABLE IF NOT EXISTS `mdfishing` (
+CREATE TABLE IF NOT EXISTS `md_fishing` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `citizenid` text NOT NULL,
   `levels` text NOT NULL,

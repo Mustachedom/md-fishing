@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'WRONG ROD FOR THIS BEAT — SWITCH IT UP, PRO 🎚️🎣',
     noLevel = 'NO FISH DATA? RELOG — SERVER’S WAITIN’ ON YA 💾🔁',
     wrongLevel = 'YOU NEED LEVEL %s TO DROP BEATS HERE — LEVEL UP, ROOKIE 📈🎣',
-    found = '🚨 BITE DETECTED — DROP THE HOOK, SPIN THAT REEL! 🎣💥'
+    found = '🚨 BITE DETECTED — DROP THE HOOK, SPIN THAT REEL! 🎣💥',
+    inZone = 'YOU’RE LOCKED IN THE FISH ZONE — LET’S GET THIS PARTY STARTED! 🐟🎉',
+    outZone = 'YOU’RE OUTTA THE FISH ZONE — TIME TO RELOCATE, DJ! 🗺️🚫',
 }
 
 Lang.Targets = {

@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'MWWAAA-GRRR!',
     noLevel = 'WHUFF-RRR?',
     wrongLevel = 'GRRR-LEVEL %s!',
-    found = 'ROOOAAARRR!!!'
+    found = 'ROOOAAARRR!!!',
+    inZone = 'GRRR-WHUFF',
+    outZone = 'MWWAAA-GRRR',
 }
 
 Lang.Targets = {

@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'Vous ne pouvez pas utiliser cette canne ici',
     noLevel = 'Vous n’avez aucune donnée de pêche, veuillez vous reconnecter',
     wrongLevel = 'Vous devez être niveau %s pour pêcher ici',
-    found = 'Vous avez une touche !'
+    found = 'Vous avez une touche !',
+    inZone = 'Vous êtes maintenant dans une zone de pêche',
+    outZone = 'Vous êtes maintenant hors de la zone de pêche',
 }
 
 Lang.Targets = {

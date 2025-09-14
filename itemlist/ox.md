@@ -352,6 +352,16 @@
         image = 'rustyshotgun.png'
     }
 },
+['rustysafe'] = {
+    label = 'Rusty Safe',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "An unusable, rusty safe",
+    client = {
+        image = 'closedsafe.png'
+    }
+},
 
 ['rustysign'] = {
     label = 'Rusty Sign',
@@ -408,6 +418,29 @@
     }
 },
 
+['seaturtle'] = {
+    label = 'Sea Turtle',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "Did you have more than one person helping?",
+    client = {
+        image = 'seaturtle.png'
+    }
+},
+
+['sheetmetal'] = {
+    label = 'Sheet Metal',
+    weight = 300,
+    stack = true,
+    close = false,
+    description = "",
+    client = {
+        image = 'rustyelectronickit.png'
+    }
+},
+
+
 ['softplasticbait'] = {
     label = 'Soft Plastic Bait',
     weight = 300,
@@ -429,6 +462,7 @@
         image = 'spermwhale.png'
     }
 },
+
 
 ['spinnerbait'] = {
     label = 'Spinner Bait',
@@ -496,7 +530,7 @@
     }
 },
 
-['tuna'] = {
+['tunafish'] = {
     label = 'Tuna',
     weight = 300,
     stack = true,

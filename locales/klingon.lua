@@ -44,7 +44,9 @@ Lang.Fishing = {
     wrongPole = 'bIghajbe’ ‘op ngop — You cannot wield this pole here (Wrong weapon for this hunt)',
     noLevel = 'bIghajbe’ ‘op ‘Iw — You have no fishing data (Re-log — system failure is unacceptable)',
     wrongLevel = 'bIghajtaHvIS %s ‘op ‘Iw — You must be level %s to fish here (Prove your worth, warrior)',
-    found = '‘op qaw’! — Prey bites! (Strike now!)'
+    found = '‘op qaw’! — Prey bites! (Strike now!)',
+    inZone = 'bISoptaH retlhDaq — You are now in fishing zone (Prepare for battle!)',
+    outZone = 'bI‘optaHbe’ retlhDaq — You are now out of fishing zone (Seek new waters!)',
 }
 
 Lang.Targets = {
