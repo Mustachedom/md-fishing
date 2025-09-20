@@ -1,8 +1,7 @@
 activeFishers = {} -- no touch
 inZonePlayers = {} -- no touch
 timeouts = {} -- no touch
-LevelUpAmount = 60 -- amount of fish required to level up
-StarIllLvl = 5 -- level required of regular fishing to be allowed to start illegal fishing
+cacheSQL = {} -- no touch
 
 locations = {
 	fishingZones = { -- fishing and magnet fishing allowed here
@@ -31,6 +30,22 @@ locations = {
 	}
 }
 
+StarIllLvl = 5 -- level required of regular fishing to be allowed to start illegal fishing
+
+LevelUpAmount = 60 -- amount of fish required to level up
+levelTime = { -- in seconds how long it takes to catch 1 fish by your level.
+    [0] =  {time = 5},
+    [1] =  {time = 50},
+    [2] =  {time = 45},
+    [3] =  {time = 40},
+    [4] =  {time = 35},
+    [5] =  {time = 30},
+    [6] =  {time = 25},
+    [7] =  {time = 20},
+    [8] =  {time = 15},
+    [9] =  {time = 10},
+    [10] = {time = 5},
+}
 
 stores = {
 	fishShop = { -- what the shop sells left is item | right is price
@@ -176,4 +191,19 @@ breakDown = {
 		items = {"metalscrap", "iron","copper", "steel", "aluminum"},
 		amount = {min = 1, max = 3}
 	},
+}
+
+chumMake = { -- % of the amount of fish will be turn to chum, example 100 fish = 90
+	flounder = 0.8,
+	reddrum = 0.8,
+	tunafish = 0.8,
+	steelhead = 0.8,
+	bluefish = 0.8,
+	halibut = 0.8,
+	catfish = 0.8,
+	whitebass = 0.8,
+	salmon = 0.8,
+	largemouthbass = 0.8,
+	panfish = 0.8,
+	trout = 0.8,
 }

@@ -103,4 +103,12 @@ Anglay.anchor = {
     noBoat = 'Erehway Isay Ouryay Oatbay?',
 }
 
+Anglay.RepCommand = {
+    header = 'Ishingfay Eputationray',
+        fishing = 'Ishingfay Evellay: %say',
+        illegal = 'Illegalay Ishingfay Evellay: %say',
+        magnet = 'Agnetmay Ishingfay Evellay: %say',
+        description = 'XP: %say / %say',
+}
+
 return Anglay

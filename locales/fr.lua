@@ -102,5 +102,11 @@ Lang.anchor = {
     anchored = 'Vous avez jeté l’ancre de votre bateau',
     noBoat = 'Où est votre bateau ?',
 }
-
+Lang.RepCommand = {
+    header = 'Réputation de Pêche',
+    fishing = 'Niveau de Pêche : %s',
+    illegal = 'Niveau de Pêche Illégale : %s',
+    magnet = 'Niveau de Pêche Magnétique : %s',
+    description = 'XP : %s / %s',
+}
 return Lang

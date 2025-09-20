@@ -103,4 +103,11 @@ Lang.anchor = {
     noBoat = 'Wheren ya boaten? Did it runnen ’way? Ooopsen!',
 }
 
+Lang.RepCommand = {
+    header = 'Fishin Repesa',
+        fishing = 'Mesa got fishin level %s — yippee!',
+        illegal = 'Uh-oh! Mesa doin’ bad fishin — level %s!',
+        magnet = 'Magnet-fishin? Level %s — clank-clank, dingers!',
+        description = 'Expee? %s outsa %s — keepa goin’, mesa proud!',
+}
 return Lang

@@ -102,5 +102,11 @@ Lang.anchor = {
     anchored = 'Zakotvili jste loď',
     noBoat = 'Kde je vaše loď?',
 }
-
+Lang.RepCommand = {
+    header = 'Rybolovná reputace',
+    fishing = 'Úroveň rybolovu: %s',
+    illegal = 'Úroveň nelegálního rybolovu: %s',
+    magnet = 'Úroveň magnetického rybolovu: %s',
+    description = 'XP: %s / %s',
+}
 return Lang

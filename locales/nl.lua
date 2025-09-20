@@ -103,4 +103,11 @@ Lang.anchor = {
     noBoat = 'Waar is je boot?',
 }
 
+Lang.RepCommand = {
+    header = 'Visreputatie',
+        fishing = 'Verniveau: %s',
+        illegal = 'Illegaal verniveau: %s',
+        magnet = 'Magneetvissen niveau: %s',
+        description = 'XP: %s / %s',
+}
 return Lang

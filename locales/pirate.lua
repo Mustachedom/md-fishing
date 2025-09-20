@@ -103,4 +103,11 @@ Lang.anchor = {
     noBoat = 'Where be yer ship, ye forgetful fool? Did the kraken take it?',
 }
 
+Lang.RepCommand = {
+    header = 'FISHIN’ REPUTATION, YE SCALLYWAG!',
+        fishing = 'YARR! FISHIN’ LEVEL %s — CAST YER LINES, YA BARNACLE!',
+        illegal = 'SHIVER ME TIMBERS! ILLEGAL FISHIN’ LEVEL %s — THE ADMIRAL BE COMIN’!',
+        magnet = 'AVAST! MAGNET FISHIN’ LEVEL %s — YE BE PULLIN’ UP TREASURE... OR BOOTY!',
+        description = 'XP: %s / %s — KEEP SWABBIN’ THE DECK TILL YE EARN IT, YA LANDLUBBER!',
+}
 return Lang

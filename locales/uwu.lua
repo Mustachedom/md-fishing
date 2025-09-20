@@ -103,4 +103,11 @@ Lang.anchor = {
     noBoat = 'Whewe is youw boaty? Did it wun away?~ 🚤❓'
 }
 
+Lang.RepCommand = {
+    header = 'Fwishin’ Wep OwO',
+        fishing = 'Fwishin’ wevew: %s UwU',
+        illegal = 'Iwwegaw fwishin’ wevew: %s 😿',
+        magnet = 'Mag-net fwishin’ wevew: %s 🧲✨',
+        description = 'Expewience p-pwoints: %s / %s 🍪',
+}
 return Lang

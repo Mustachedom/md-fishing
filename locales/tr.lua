@@ -103,4 +103,11 @@ Lang.anchor = {
     noBoat = 'Teknen nerede?',
 }
 
+Lang.RepCommand = {
+    header = 'Balıkçılık İtibarı',
+    fishing = 'Balıkçılık Seviyesi: %s',
+    illegal = 'Yasa Dışı Balıkçılık Seviyesi: %s',
+    magnet = 'Mıknatıs Balıkçılık Seviyesi: %s',
+    description = 'XP: %s / %s',
+}
 return Lang

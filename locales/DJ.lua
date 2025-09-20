@@ -103,4 +103,11 @@ Lang.anchor = {
     noBoat = 'WHERE’S YA BOAT, CAPTAIN? DID IT GHOST YA? 🚤👻'
 }
 
+Lang.RepCommand = {
+    header = '🎣 FISHIN’ REP — TURN IT UP!!! 🎧',
+    fishing = 'YOOOOO — FISHIN’ LEVEL AT %s!!! DROP THE BASS!!!',
+    illegal = '🚨🚨🚨 ILLLEGAL FISHIN’ LEVEL %s — COPS ON THE WAY!!! 🚨🚨🚨',
+    magnet = '🧲🧲 MAGNET FISHIN’ LEVEL %s — PULLIN’ TREASURE LIKE A BOSS!!! 🧲🧲',
+    description = 'XP COUNTER: %s OUTTA %s — KEEP GRINDIN’, CHAMP!!! 💪🔥',
+}
 return Lang

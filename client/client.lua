@@ -244,10 +244,12 @@ RegisterNetEvent('md-fishing:client:fishing', function(Timer)
 		TriggerServerEvent('md-fishing:server:stopFishing')
 		return
 	end
+	
 	if fishing then
 		ps.notify(ps.lang('Fails.alreadyFishing'), 'error')
 		return
 	end
+
 	fishing = true
 	poleMake()
 
@@ -309,4 +311,20 @@ RegisterCommand('anchor', function()
     else
         ps.notify(ps.lang('anchor.noBoat'))
     end
+end, false)
+
+RegisterCommand('fishingRep', function()
+	local rep = ps.callback('md-fishing:server:getLevels')
+	local menu = {}
+	for k, v in pairs (rep.level) do
+		print(v.level)
+		menu[#menu + 1] = {
+			title = ps.lang('RepCommand.'..k, v.level),
+			description = ps.lang('RepCommand.description', v.xp, rep.maxXP),
+			action = function()
+				return
+			end
+		}
+	end
+	ps.menu(ps.lang('RepCommand.header'), ps.lang('RepCommand.header'), menu)
 end, false)

@@ -103,4 +103,11 @@ Lang.anchor = {
     noBoat = 'nuq Duj? — Where is boat? (Did you lose it in battle?)',
 }
 
+Lang.RepCommand = {
+    header = 'nagh qotlh',
+    fishing = 'nagh qotlh pong: %s',
+    illegal = 'Qun qotlh nagh pong: %s',
+    magnet = 'Hurgh nagh qotlh pong: %s',
+    description = 'qotlh: %s / %s',
+}
 return Lang

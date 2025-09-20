@@ -102,4 +102,12 @@ Lang.anchor = {
     anchored = 'GRRR-DOWN!',
     noBoat = 'MWWAAA-BOAT?',
 }
+
+Lang.RepCommand = {
+     header = 'GRRRRAAAAAWWWWR',
+        fishing = 'RWWWAAAAARRRGGHHH %s',
+        illegal = 'RRRROOOOAAAAWWWRRR %s',
+        magnet = 'BWAAAAARRRGGHHH-MAGNET-RRRRAAAWWW %s',
+        description = 'GROWL: %s / %s',
+}
 return Lang

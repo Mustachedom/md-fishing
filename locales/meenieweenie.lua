@@ -103,4 +103,11 @@ Lang.anchor = {
     noBoat = 'Where’s your boat? Did you sell it for ramen again?',
 }
 
+Lang.RepCommand = {
+    header = 'Oh Look, Your Little Fishing Trophy',
+        fishing = 'Congrats, you can cast a line... barely. Level %s? Cute.',
+        illegal = 'Wow, criminal mastermind over here — illegal fishing level %s. The fish are trembling.',
+        magnet = 'Ooooh, you fished with a magnet? Level %s? Groundbreaking. Call the news.',
+        description = 'XP: %s / %s — Still not enough to make anyone care.',
+}
 return Lang
