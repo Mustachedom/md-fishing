@@ -41,7 +41,7 @@
 
 ---
 ### Step 3 Configure The Script To your liking
-- Everything Is in the server.lua OR Config.lua
+- Everything Is in the server_config.lua OR Config.lua
   - adjust what you will like.
 
 # MAJOR IMPORTANT STEP 
@@ -50,3 +50,4 @@
 
 ### AFTER INSTALLING AND BEFORE FLYING IN GO INTO TXADMIN CONSOLE AND RUN THIS COMMAND `FishingReFormater` THEN WAIT A FEW SECONDS. DELETE IT FROM line 514-end of server.lua
 ### THEN RESTART YOUR SERVER. THIS WILL AUTO UPDATE ALL PLAYER DATA TO NEW FORMAT
+
