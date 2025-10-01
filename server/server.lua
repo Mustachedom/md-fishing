@@ -112,7 +112,7 @@ RegisterNetEvent('md-fishing:server:breakDownRustys', function(loc, item)
 	end
 end)
 
-ps.versionCheck('md-fishing', 'https://raw.githubusercontent.com/Mustachedom/md-fishing/01f336f9cbbecb45dfe0d912887f1715663b3213/version.txt', 'https://github.com/Mustachedom/md-fishing/tree/01f336f9cbbecb45dfe0d912887f1715663b3213')
+ps.versionCheck('md-fishing', 'https://raw.githubusercontent.com/Mustachedom/md-fishing/refs/heads/main/version.txt', 'https://github.com/Mustachedom/md-fishing/')
 
 RegisterNetEvent('md-fishing:server:inZone', function(locationType, location)
 	local src = source
