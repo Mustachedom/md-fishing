@@ -90,6 +90,7 @@ local function initScript()
 					if not itemList then return end
 					local menu = {}
 					menu[#menu + 1] = {
+						order = 'a',
 						title = ps.lang('Targets.fishBuyer.sell.label'),
 						icon = ps.lang('Targets.fishBuyer.sell.icon'),
 						description = ps.lang('Targets.fishBuyer.sell.description'),
@@ -98,7 +99,9 @@ local function initScript()
 						end
 					}
 					for item, price in pairs (itemList) do
+						if not ps.hasItem(item) then goto continue end
 						menu[#menu + 1] = {
+							order = ps.getLabel(item),
 							title = ps.getLabel(item),
 							icon = ps.getImage(item),
 							description = ps.lang('Targets.fishBuyer.description', price),
@@ -106,7 +109,9 @@ local function initScript()
 								TriggerServerEvent('md-fishing:server:sellFish', item, k)
 							end
 						}
+						::continue::
 					end
+					table.sort(menu, function(a, b) return a.order < b.order end)
 					ps.menu(ps.lang('Targets.fishBuyer.menuTitle'), ps.lang('Targets.fishBuyer.menuTitle'), menu)
 				end,
 			},
@@ -244,7 +249,7 @@ RegisterNetEvent('md-fishing:client:fishing', function(Timer)
 		TriggerServerEvent('md-fishing:server:stopFishing')
 		return
 	end
-	
+
 	if fishing then
 		ps.notify(ps.lang('Fails.alreadyFishing'), 'error')
 		return
@@ -317,7 +322,6 @@ RegisterCommand('fishingRep', function()
 	local rep = ps.callback('md-fishing:server:getLevels')
 	local menu = {}
 	for k, v in pairs (rep.level) do
-		print(v.level)
 		menu[#menu + 1] = {
 			title = ps.lang('RepCommand.'..k, v.level),
 			description = ps.lang('RepCommand.description', v.xp, rep.maxXP),

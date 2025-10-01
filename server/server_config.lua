@@ -3,7 +3,7 @@ inZonePlayers = {} -- no touch
 timeouts = {} -- no touch
 cacheSQL = {} -- no touch
 
-locations = {
+locations = { -- blipData can = nil
 	fishingZones = { -- fishing and magnet fishing allowed here
 		{loc = vector3(-1849.2, -1230.44, 13.02), radius = 30, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = ps.lang('Labels.fishZoneBlip'), enabled = true} },
     	{loc = vector3(-3427.21, 967.53, 8.35),   radius = 30, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = ps.lang('Labels.fishZoneBlip'), enabled = true} },
@@ -34,7 +34,7 @@ StarIllLvl = 5 -- level required of regular fishing to be allowed to start illeg
 
 LevelUpAmount = 60 -- amount of fish required to level up
 levelTime = { -- in seconds how long it takes to catch 1 fish by your level.
-    [0] =  {time = 5},
+    [0] =  {time = 55},
     [1] =  {time = 50},
     [2] =  {time = 45},
     [3] =  {time = 40},
@@ -50,13 +50,13 @@ levelTime = { -- in seconds how long it takes to catch 1 fish by your level.
 stores = {
 	fishShop = { -- what the shop sells left is item | right is price
 		fishingpole = 1000,
+		magnetpole = 1000,
+		illegalpole = 10000,
 		worms = 25,
 		spinnerbait = 25,
         softplasticbait = 25,
 		plugbait = 25,
 		magnet = 25,
-		magnetpole = 1000,
-		illegalpole = 10000,
     },
 	fishSales = { -- what the fish buyer buys left is item | right is price
         flounder          = 50,

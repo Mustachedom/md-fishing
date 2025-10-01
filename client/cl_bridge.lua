@@ -1,7 +1,6 @@
 local minigametype = Config.minigametype
 
 function minigame()
-	local time = 0
 	local game = Config.Minigames
 	if minigametype == 'ps_circle' then
 		local check = exports['ps-ui']:Circle(false, game['ps_circle'].amount, game['ps_circle'].speed)

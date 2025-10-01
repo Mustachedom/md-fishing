@@ -1,6 +1,7 @@
 Config = {}
 ps = exports.ps_lib:init()
 ps.loadLangs("en") -- set your languages folder name here
+
 Config.OldData = false -- if you used the old version of the script set this to true to convert your data
 Config.AutoRecast = true -- if false players will have to reclick their pole for every catch
 Config.FreezePlayerWhileFishing = true -- keeps players from moving while fishing 
