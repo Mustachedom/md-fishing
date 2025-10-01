@@ -1,209 +1,425 @@
-local QBCore = exports['qb-core']:GetCoreObject()
-local poles = {'fishingpole', 'magnetpole', 'illegalpole'}
-local chestLocs = {}
 
-for k, v in pairs (poles) do 
-	QBCore.Functions.CreateUseableItem(v, function(source, item)
+ps.registerCallback('md-fishing:server:getLocations', function(source)
+	return locations
+end)
+
+ps.registerCallback('md-fishing:server:getStores', function(source, type, location)
+	local src = source
+
+	if type == 'fishSales' then
+		if not ps.checkDistance(src, locations['fishBuyers'][location].loc, 5.0) then
+			ps.warn(ps.lang('Fails.tooFar', ps.getPlayerName(src), ps.lang('Info.fishBuyer')))
+			return
+		end
+		return stores.fishSales
+	end
+
+	if type == 'fishShop' then
+		if not ps.checkDistance(src, locations['shopLocation'][location].loc, 5.0) then
+			ps.warn(ps.lang('Fails.tooFar', ps.getPlayerName(src), ps.lang('Info.fishShop')))
+			return
+		end
+		return stores.fishShop
+	end
+	return nil
+end)
+
+RegisterNetEvent('md-fishing:server:sellFish', function(fish, loc)
+	local src = source
+
+	if not ps.checkDistance(src, locations['fishBuyers'][loc].loc, 5.0) then
+		ps.warn(ps.lang('Fails.tooFar', ps.getPlayerName(src), ps.lang('Info.fishBuyer')))
+		return
+	end
+
+	if fish == 'all' then
+		for k, v in pairs (stores.fishSales) do
+			local itemCount = ps.getItemCount(src, k)
+			if itemCount > 0 then
+				local total = itemCount * v
+				if ps.removeItem(src, k, itemCount) then
+					ps.addMoney(src, 'cash', total, 'sold-fish')
+				end
+			end
+		end
+		return
+	end
+
+	if not stores.fishSales[fish] then return end
+
+	local itemCount = ps.getItemCount(src, fish)
+	if itemCount > 0 then
+		local total = itemCount * stores.fishSales[fish]
+		if ps.removeItem(src, fish, itemCount) then
+			ps.addMoney(src, 'cash', total, 'sold-fish')
+			ps.notify(src, ps.lang('Shops.sold', itemCount, ps.getItemLabel(fish), ps.lang('Info.currency'), total), 'success')
+		end
+	else
+		ps.notify(src, ps.lang('Shops.noFish', ps.getItemLabel(fish)), 'error')
+	end
+end)
+
+RegisterNetEvent('md-fishing:server:buyFishGear', function(loc, item, data)
+	local src = source
+
+	if not ps.checkDistance(src, locations['shopLocation'][loc].loc, 3.5) then
+		ps.warn(ps.lang('Fails.tooFar', ps.getPlayerName(src), ps.lang('Info.fishShop')))
+		return
+	end
+
+	if not stores['fishShop'][item] then
+		ps.warn(ps.lang('Fails.invalidItem', ps.getPlayerName(src), item, ps.lang('Info.fishShop')))
+		return
+	end
+
+	local price = stores['fishShop'][item] * data.amount
+	if ps.removeMoney(src, data.type, price) then
+		ps.addItem(src, item, data.amount)
+		ps.notify(src, ps.lang('Shops.bought', data.amount, ps.getItemLabel(item), ps.lang('Info.currency'), price), 'success')
+	else
+		ps.notify(src, ps.lang('Fails.tooPoor',ps.lang('Info.currency'), price, data.type), 'error')
+	end
+end)
+
+ps.registerCallback('md-fishing:server:getBreakdown', function(source, location)
+	local src = source
+
+	if not ps.checkDistance(src, locations['breakDown'][location].loc, 3.5) then
+		ps.warn(ps.lang('Fails.tooFar', ps.getPlayerName(src), ps.lang('Info.breakDown')))
+		return
+	end
+
+	return breakDown
+end)
+
+RegisterNetEvent('md-fishing:server:breakDownRustys', function(loc, item)
+	local src = source
+
+	if not ps.checkDistance(src, locations['breakDown'][loc].loc, 3.0) then
+		ps.warn(ps.lang('Fails.tooFar', ps.getPlayerName(src), ps.lang('Info.breakDown')))
+		return
+	end
+
+	if not breakDown[item] then
+		ps.warn(ps.lang('Fails.invalidBreakdown', ps.getPlayerName(src), item, ps.lang('Info.breakDown')))
+		return
+	end
+
+	if ps.removeItem(src, item, 1) then
+		local itemReward = breakDown[item]['items'][math.random(1, #breakDown[item]['items'])]
+		local itemAmount = math.random(breakDown[item]['amount'].min, breakDown[item]['amount'].max)
+		ps.addItem(src, itemReward, itemAmount)
+	end
+end)
+
+ps.versionCheck('md-fishing', 'https://raw.githubusercontent.com/Mustachedom/md-fishing/01f336f9cbbecb45dfe0d912887f1715663b3213/version.txt', 'https://github.com/Mustachedom/md-fishing/tree/01f336f9cbbecb45dfe0d912887f1715663b3213')
+
+RegisterNetEvent('md-fishing:server:inZone', function(locationType, location)
+	local src = source
+	local distance = #(GetEntityCoords(GetPlayerPed(src)) - locations[locationType][location].loc)
+	if distance > locations[locationType][location].radius then
+		ps.warn(src, ps.lang('Fails.zoneGlitch', ps.getPlayerName(src)))
+		return
+	end
+	inZonePlayers[ps.getIdentifier(src)] = {type = locationType, loc = location}
+end)
+
+RegisterNetEvent('md-fishing:server:outZone', function()
+	local src = source
+	local identifier = ps.getIdentifier(src)
+	inZonePlayers[identifier] = nil
+
+	if activeFishers[identifier] then
+		ps.notify(src, ps.lang('Fails.leftZone'), 'error')
+		activeFishers[identifier] = nil
+		TriggerClientEvent('md-fishing:client:stopfishing', src)
+	end
+end)
+
+local function getPoleType(pole)
+	if pole == 'fishingpole' then
+		return 'fishing'
+	elseif pole == 'magnetpole' then
+		return 'magnet'
+	elseif pole == 'illegalpole' then
+		return 'illegal'
+	end
+	return nil
+end
+
+local poles = {'fishingpole', 'magnetpole', 'illegalpole'}
+local spamProtection = {}
+
+local function checkSpam(license)
+	if spamProtection[license] then
+		return true
+	end
+	spamProtection[license] = true
+	CreateThread(function()
+		Wait(2000)
+		spamProtection[license] = nil
+	end)
+	return false
+end
+
+local function checkSQL(src)
+	local identifier = ps.getIdentifier(src)
+	if cacheSQL[identifier] then
+		return true
+	end
+	local check = MySQL.query.await('SELECT * FROM md_fishing WHERE citizenid = ?', { identifier })
+	if not check[1] then
+		local levels = {
+			fishing = {level = 0, xp = 0},
+			illegal = {level = 0, xp = 0},
+			magnet = {level = 0, xp = 0},
+		}
+		MySQL.insert('INSERT INTO md_fishing (citizenid, levels, name) VALUES (?, ?,?)', {
+			identifier,json.encode(levels), ps.getPlayerName(src)
+    	})
+		cacheSQL[identifier] = levels
+	end
+	if not cacheSQL[identifier] then
+		cacheSQL[identifier] = json.decode(check[1].levels)
+	end
+	return true
+end
+
+ps.registerCallback('md-fishing:server:getLevels', function(source)
+	local src = source
+	local identifier = ps.getIdentifier(src)
+	checkSQL(src)
+	return {level = cacheSQL[identifier], maxXP = LevelUpAmount}
+end)
+
+local function getWaitTimer(identifier, poleType)
+	local lvl = cacheSQL[identifier]
+	if not lvl then return levelTime[0].time end
+	if not lvl[poleType] then return levelTime[0].time end
+	return levelTime[lvl[poleType].level].time or levelTime[0].time
+end
+
+for k, v in pairs (poles) do
+	ps.createUseable(v, function(source, item)
 		local src = source
-		if v == 'fishingpole' then 
-			TriggerClientEvent('md-fishing:client:fishing', src, 'fishing')
-		elseif v == 'magnetpole' then
-			TriggerClientEvent('md-fishing:client:fishing', src, 'magnetfishing')
-		elseif v == 'illegalpole' then
-			TriggerClientEvent('md-fishing:client:fishing', src, 'illegal')
-		else
+		local identifier = ps.getIdentifier(src)
+
+		if activeFishers[identifier] then
+			ps.notify(src, ps.lang('Fishing.stopped'), 'success')
+			activeFishers[identifier] = nil
+			TriggerClientEvent('md-fishing:client:stopfishing', src)
+			return
+		end
+
+		if checkSpam(identifier) then
+			return
+		end
+
+		checkSQL(src)
+
+		if not inZonePlayers[identifier] then
+			ps.notify(src, ps.lang('Fishing.notInZone'), 'error')
+			TriggerClientEvent('md-fishing:client:stopfishing', src)
+			return
+		end
+
+		if v == 'fishingpole' or v == 'magnetpole' then
+			if inZonePlayers[identifier].type ~= 'fishingZones' then
+				ps.notify(src, ps.lang('Fishing.wrongPole'), 'error')
+				TriggerClientEvent('md-fishing:client:stopfishing', src)
+				return
+			end
+
+			local checkDistance = #(GetEntityCoords(GetPlayerPed(src)) - locations.fishingZones[inZonePlayers[identifier].loc].loc)
+			if checkDistance > locations.fishingZones[inZonePlayers[identifier].loc].radius then
+				ps.notify(src, ps.lang('Fails.leftZone'), 'error')
+				inZonePlayers[identifier] = nil
+				TriggerClientEvent('md-fishing:client:stopfishing', src)
+				return
+			end
+
+			activeFishers[identifier] = {pole = v, location = inZonePlayers[identifier].loc, type = 'fishingZones', fishingType = getPoleType(v)}
+
+			timeouts[identifier] = getWaitTimer(identifier, getPoleType(v))
+			CreateThread(function()
+				Wait(1000 * timeouts[identifier])
+				timeouts[identifier] = nil
+			end)
+			TriggerClientEvent('md-fishing:client:fishing', src, timeouts[identifier])
+			return
+		end
+
+		if v == 'illegalpole' then
+			if inZonePlayers[identifier].type == 'fishingZones' then
+				ps.notify(src, ps.lang('Fishing.wrongPole'), 'error')
+				TriggerClientEvent('md-fishing:client:stopfishing', src)
+				return
+			end
+
+			local checkDistance = #(GetEntityCoords(GetPlayerPed(src)) - locations.illegalFishingZones[inZonePlayers[identifier].loc].loc)
+			if checkDistance > locations.illegalFishingZones[inZonePlayers[identifier].loc].radius then
+				ps.notify(src, ps.lang('Fails.leftZone'), 'error')
+				TriggerClientEvent('md-fishing:client:stopfishing', src)
+				inZonePlayers[identifier] = nil
+				return
+			end
+
+			local lvl = cacheSQL[identifier]
+			if lvl.fishing.level < StarIllLvl then
+				ps.notify(src, ps.lang('Fishing.wrongLevel', StarIllLvl), 'error')
+				TriggerClientEvent('md-fishing:client:stopfishing', src)
+				return
+			end
+
+			activeFishers[identifier] = {pole = v, location = inZonePlayers[identifier].loc, type = 'illegalFishingZones', fishingType = getPoleType(v)}
+
+			timeouts[identifier] = getWaitTimer(identifier, getPoleType(v))
+			CreateThread(function()
+				Wait(1000 * timeouts[identifier])
+				timeouts[identifier] = nil
+			end)
+			TriggerClientEvent('md-fishing:client:fishing', src, timeouts[identifier])
+			return
 		end
 	end)
 end
 
-lib.callback.register('md-fishing:server:GetLevels', function(source, data)
-	local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-	if data == 'fishing' then 
-		local fish = MySQL.scalar.await('SELECT fishing FROM mdfishing WHERE citizenid = ?', { Player.PlayerData.citizenid })
-		return fish
-	elseif data == 'illegal' then
-		local ill = MySQL.scalar.await('SELECT illegalfish FROM mdfishing WHERE citizenid = ?', { Player.PlayerData.citizenid })
-		return ill
-	elseif data == 'magnetfishing' then
-		local mag = MySQL.scalar.await('SELECT magnetfish FROM mdfishing WHERE citizenid = ?', { Player.PlayerData.citizenid })
-		return mag
-	end
-	return false
-end)
-
-lib.callback.register('md-fishing:server:LevelMenu', function(source, cb, args)
-	local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-	local fish = MySQL.query.await('SELECT fishing, illegalfish, magnetfish, fishxp, magxp, illfishxp FROM mdfishing WHERE citizenid = ?', { Player.PlayerData.citizenid })
-	
-	return fish[1]
-end)
-
-------------------------------- creates a table on players first log in with script
-RegisterServerEvent('md-fishing:server:checksql', function()
-	local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-   
-	local check = MySQL.query.await('SELECT citizenid FROM mdfishing WHERE citizenid = ?', { Player.PlayerData.citizenid })
-	if not check[1] then 
-		MySQL.insert('INSERT INTO mdfishing (citizenid, name) VALUES (?, ?)', {
-			Player.PlayerData.citizenid, GetName(src)
-    	})
-	end	
-end)
 
 --------------------------------- catch fish logic
 
-RegisterServerEvent('md-fishing:server:givefish', function(data)
+local function addRepToPlayer(identifier, poleType)
+	local lvl = cacheSQL[identifier]
+	if not lvl then return end
+	if not lvl[poleType] then return end
+
+	lvl[poleType].xp = lvl[poleType].xp + 1
+	if lvl[poleType].xp >= LevelUpAmount then
+		if lvl[poleType].level + 1 <= 10 then
+			lvl[poleType].level = lvl[poleType].level + 1
+			lvl[poleType].xp = 0
+		end
+	end
+
+	MySQL.update('UPDATE md_fishing SET levels = ? WHERE citizenid = ?', {json.encode(lvl), identifier})
+	CreateThread(function()
+		timeouts[identifier] = true
+		Wait(1000 * levelTime[lvl[poleType].level].time)
+		timeouts[identifier] = nil
+	end)
+end
+
+RegisterServerEvent('md-fishing:server:givefish', function()
 	local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-	local chestchance = math.random(1,100)
-	local has = 0
-	local rep = getRep(source)
+	local identifier = ps.getIdentifier(src)
 
-	local catch = {
-		spinner = {"largemouthbass", "panfish", "trout",},
-		softplastic = {"catfish", "whitebass", "salmon",},
-		plug = {"steelhead", "bluefish", "halibut",},
-		worms = {"flounder", "reddrum", "tunafish",},
-		magnet = {"rustyak", "rustypistol", "rustyshotgun", "rustybike", "rustysafe", "copperpipe", 
-			"closedsafe", "sheetmetal", "rustysign", "rustytire", "rustywheelchair", "rustychain", "rustyantenna", "rustyelectronickit", "rustyscanner",
-			"rustyraspberrypi", "rustyusb", "rustyscrapmetal",
-		},
-		illegal = {"tigershark", "groundshark", "goblinshark", "stripeddolphin", "chileandolphin", "atlanticdolphin", "belugawhale", "bluewhale", 
-			"narwhal", "spermwhale", "seaturtle", "tortoise", "leatherheadturtle",
-		},
-	}
+	if timeouts[identifier] then
+		ps.notify(src, ps.lang('Fails.onTimeout'), 'error')
+		return
+	end
 
-	local bait = {
-		{bait = 'spinnerbait', 	    zone = 'fish',   type = 'fishxp',     level = 'fishing',      fish = catch.spinner[math.random(1, #catch.spinner)]},
-		{bait = 'softplasticbait',  zone = 'fish',   type = 'fishxp',     level = 'fishing',      fish = catch.softplastic[math.random(1, #catch.softplastic)] },
-		{bait = 'plugbait', 		zone = 'fish',   type = 'fishxp',     level = 'fishing',      fish = catch.plug[math.random(1, #catch.plug)] },
-		{bait = 'worms', 			zone = 'fish',   type = 'fishxp',     level = 'fishing',      fish = catch.worms[math.random(1, #catch.worms)] },
-		{bait = 'magnet', 			zone = 'magnet', type = 'magxp',      level = 'magnetfish',   fish = catch.magnet[math.random(1, #catch.magnet)] },
-		{bait = 'chum', 			zone = 'illegal',type = 'illfishxp',  level = 'illegalfish',  fish = catch.illegal[math.random(1, #catch.illegal)] },
-	}
+	if not activeFishers[identifier] then
+		ps.notify(src, ps.lang('Fishing.notInZone'), 'error')
+		TriggerClientEvent('md-fishing:client:stopfishing', src)
+		return
+	end
 
-	for k, v in pairs (bait) do
-		if v.zone == data then 
-			if has >= 1 then return end
-			local fish = Player.Functions.GetItemByName(v.bait)
-			if fish then
-				if v.zone == 'fish' or v.zone == 'magnet' then
-					if not isInFishingZone(src, 'fish') then return end
-				elseif v.zone == 'illegal' then
-					if not isInFishingZone(src, 'illegal') then return end
-					if rep.fishing < Config.StarIllLvl then Notifys(src, "You Need More Fishing Rep To Fish Here", "error") return end
-				end
-				if RemoveItem(src, v.bait, 1) then
-					has = has + 1
-					AddItem(src, v.fish,1)
-					addRep(src, v.type)
-				end
+	if not inZonePlayers[identifier] then
+		ps.notify(src, ps.lang('Fails.leftZone'), 'error')
+		activeFishers[identifier] = nil
+		TriggerClientEvent('md-fishing:client:stopfishing', src)
+		return
+	end
+
+	local checkDistance = #(GetEntityCoords(GetPlayerPed(src)) - locations[activeFishers[identifier].type][activeFishers[identifier].location].loc)
+	if checkDistance > locations[activeFishers[identifier].type][activeFishers[identifier].location].radius then
+		ps.notify(src, ps.lang('Fails.leftZone'), 'error')
+		inZonePlayers[identifier] = nil
+		activeFishers[identifier] = nil
+		TriggerClientEvent('md-fishing:client:stopfishing', src)
+		return
+	end
+
+	local bait = baitTypes[activeFishers[identifier].pole] or nil
+	if not bait then return end
+	local completed = false
+	for baitType, v in pairs (bait) do
+		if ps.hasItem(src, baitType, 1) then
+			if ps.removeItem(src, baitType, 1) then
+				ps.addItem(src, v[math.random(1, #v)], 1)
+				addRepToPlayer(identifier, activeFishers[identifier].fishingType)
+				completed = true
+				break
 			end
 		end
 	end
-	if has == 0 then Notifys(src, "You Have No Bait", "error") return end
-	if chestchance <= Config.TreasureChestchance then AddItem("mdtreasurechest", 1) Notifys("You Got Lucky And Found A Chest", "success") end
+
+	if not completed then
+		ps.notify(src, ps.lang('Fails.outOfBait'), 'error')
+		activeFishers[identifier] = nil
+		TriggerClientEvent('md-fishing:client:stopfishing', src)
+		return
+	end
 end)
 
+RegisterServerEvent('md-fishing:server:stopFishing', function()
+	local src = source
+	local identifier = ps.getIdentifier(src)
+	if activeFishers[identifier] then
+		activeFishers[identifier] = nil
+		TriggerClientEvent('md-fishing:client:stopfishing', src)
+		ps.notify(src, ps.lang('Fishing.stopped'), 'error')
+	end
+end)
 
-------------------------------------------------------
-RegisterNetEvent('md-fishing:server:fishchum', function()
+RegisterServerEvent('md-fishing:server:stopFishingNoAlert', function()
+	local src = source
+	local identifier = ps.getIdentifier(src)
+	if activeFishers[identifier] then
+		activeFishers[identifier] = nil
+		TriggerClientEvent('md-fishing:client:stopfishing', src)
+	end
+end)
+
+RegisterNetEvent('md-fishing:server:fishchum', function(location)
     local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-	local info = Player.PlayerData.charinfo
-	local chumMake = {
-		flounder = 80,
-		reddrum = 80,
-		tunafish = 80,
-		steelhead = 80,
-		bluefish = 80,
-		halibut = 80,
-		catfish = 80,
-		whitebass = 80,
-		salmon = 80,
-		largemouthbass = 80,
-		panfish = 80,
-		trout = 80,
-	}
+
+	if not ps.checkDistance(src, locations['chumMaker'][location].loc, 3.5) then
+		ps.notify(src, ps.lang('Fails.tooFar', ps.getPlayerName(src), ps.lang('Info.breakDown')), 'error')
+		return
+	end
+
 	local amount = 0
     for k, v in pairs(chumMake) do
-        local item = Player.Functions.GetItemByName(k)
-        if item and item.amount > 0 then
-			local allow = math.random(1,100) 
-			if v <= allow then
-				amount = amount + item.amount
-            	if RemoveItem(src, k, item.amount) then
-					AddItem(src,"chum", item.amount)
-				end
-			else
+        local count = ps.getItemCount(src, k)
+		if count > 0 then
+			if ps.removeItem(src, k, count) then
+				amount = math.floor(amount + (count * v))
 			end
 		end
 	end
-	Log('ID:' .. source .. ' Name:' .. info.firstname .. ' ' .. info.lastname .. ' Made Chum!', 'illegalfishing')
-end)
 
-QBCore.Functions.CreateUseableItem('mdtreasurechest', function(source, item)
-local src = source
-local Player = QBCore.Functions.GetPlayer(src)
-
-	if RemoveItem(src, "mdtreasurechest", 1) then 
-		TriggerClientEvent('md-fishing:client:placechest', src)
+	if amount <= 0 then
+		ps.notify(src, ps.lang('Shops.noFish', 'fish'), 'error')
+		return
 	end
+	ps.addItem(src, 'chum', amount)
 end)
 
-RegisterServerEvent('md-fishing:server:getchestreward', function()
-	local src = source
-	local Player = QBCore.Functions.GetPlayer(src)
-	local num = 0
-	for k, v in pairs(chestLocs) do
-		if v.player == Player.PlayerData.citizenid then
-			num = k
+ --- RUN THIS COMMAND BEFORE ANYONE JOINS THE SERVER. READ THE README FOR GODS SAKE THEN DELETE THIS COMMAND 
+
+if Config.OldData then
+	ps.registerCommand('FishingReFormater', {
+		admin = true,
+	}, function()
+		local allData = MySQL.query.await('SELECT * FROM mdfishing', {})
+		for k, v in pairs (allData) do
+			local levels = {
+				fishing = {level = v.fishing, xp = v.fishxp},
+				illegal = {level = v.illegalfish, xp = v.illfishxp},
+				magnet = {level = v.magnetfish, xp = v.magxp},
+			}
+			MySQL.update('INSERT INTO md_fishing (citizenid, levels, name) VALUES (?, ?, ?)', {v.citizenid, json.encode(levels), v.name})
+			MySQL.query.await('DELETE FROM mdfishing WHERE citizenid = ?', {v.citizenid})
 		end
-	end
-	if num == 0 then return end
-	if  dist(src, chestLocs[num].loc) > 5 then Notifys(src, 'You Are To Far To Claim That Loot!', 'error') return end
-	table.remove(chestLocs, num)
-	local tierChances = {
-		tier1 = 70, -- 70 or below gets tier 1
-		tier2 = 90, -- 71-90 gets tier 2
-		tier3 = 100, -- 91-100 gets tier 3
-	}
-	local items = {
-		{
-			{item = 'lockpick',amount = math.random(1, 3)},
-		},
-		{
-			{item = 'goldbar',amount = 1},
-		},
-		{
-			{item = 'repairkit',amount = 1},
-		},
-	}
-	local item
-	local tierchance = math.random(1, 100)
-	if tierchance <= tierChances.tier1 then
-		item = items[1]
-	elseif tierchance <= tierChances.tier2 then
-		item = items[2]
-	elseif tierchance <= tierChances.tier3 then
-		item = items[3]
-	end
-	local itemNum = math.random(1, #item)
-	AddItem(src, item[itemNum].item, item[itemNum].amount)
-end)
-
-lib.callback.register('md-fishing:server:addLocation', function(source, data)
-	local src = source
-	local Player = QBCore.Functions.GetPlayer(src)
-	local has = 0
-	for k, v in pairs (chestLocs) do
-		if v.player == Player.PlayerData.citizenid then
-			has = has + 1
-		end
-	end
-	if has >= 1 then return end
-	table.insert(chestLocs, {loc = data, player = Player.PlayerData.citizenid})
-end)
+	end)
+end
