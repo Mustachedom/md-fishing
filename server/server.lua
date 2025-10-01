@@ -265,7 +265,7 @@ for k, v in pairs (poles) do
 			end
 
 			local lvl = cacheSQL[identifier]
-			if lvl.illegal.level < StarIllLvl then
+			if lvl.fishing.level < StarIllLvl then
 				ps.notify(src, ps.lang('Fishing.wrongLevel', StarIllLvl), 'error')
 				TriggerClientEvent('md-fishing:client:stopfishing', src)
 				return
