@@ -3,30 +3,48 @@ inZonePlayers = {} -- no touch
 timeouts = {} -- no touch
 cacheSQL = {} -- no touch
 
+local function getBlipData(types, blipToggle)
+	if types == 'fishingZones' then
+		return {sprite = 88, scale = 0.55, color = 2, label = Bridge.Language.Locale('Blips.fishingZone'), enabled = blipToggle}
+	elseif types == 'illegalFishingZones' then
+		return {sprite = 404, scale = 0.8, color = 2, label = Bridge.Language.Locale('Blips.illegalFishingZone'), enabled = blipToggle}
+	elseif types == 'chumMaker' then
+		return {sprite = 403, scale = 0.8, color = 2, label = Bridge.Language.Locale('Blips.chumMaker'), enabled = blipToggle}
+	elseif types == 'shopLocation' then
+		return {sprite = 272, scale = 0.8, color = 2, label = Bridge.Language.Locale('Blips.fishingShop'), enabled = blipToggle}
+	elseif types == 'breakDown' then
+		return {sprite = 365, scale = 0.8, color = 2, label = Bridge.Language.Locale('Blips.breakDown'), enabled = blipToggle}
+	elseif types == 'fishBuyer' then
+		return {sprite = 272, scale = 0.8, color = 2, label = Bridge.Language.Locale('Blips.fishBuyer'), enabled = blipToggle}
+	end
+
+	return nil
+end
+
 locations = { -- blipData can = nil
 	fishingZones = { -- fishing and magnet fishing allowed here
-		{loc = vector3(-1849.2, -1230.44, 13.02), radius = 30, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = ps.lang('Labels.fishZoneBlip'), enabled = true} },
-    	{loc = vector3(-3427.21, 967.53, 8.35),   radius = 30, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = ps.lang('Labels.fishZoneBlip'), enabled = true} },
-    	{loc = vector3(1313.22, 4229.9, 33.92),   radius = 30, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = ps.lang('Labels.fishZoneBlip'), enabled = true} },
-    	{loc = vector3(40.83, 848.72, 197.73),    radius = 30, debug = false, enabled = true, blipData = {sprite = 88, scale = 0.55, color = 2, label = ps.lang('Labels.fishZoneBlip'), enabled = true} },
+		{loc = vector3(-1849.2, -1230.44, 13.02), radius = 30, debug = false, enabled = true, blipData = getBlipData('fishingZones', true) },
+    	{loc = vector3(-3427.21, 967.53, 8.35),   radius = 30, debug = false, enabled = true, blipData = getBlipData('fishingZones', true) },
+    	{loc = vector3(1313.22, 4229.9, 33.92),   radius = 30, debug = false, enabled = true, blipData = getBlipData('fishingZones', true) },
+    	{loc = vector3(40.83, 848.72, 197.73),    radius = 30, debug = false, enabled = true, blipData = getBlipData('fishingZones', true) },
 	},
 	illegalFishingZones = { -- only illegal fishing allowed here
-		{loc = vector3(1788.64, -3525.29, 0.54), radius = 250, debug = false, enabled = true, blipData = {sprite = 404, scale = 0.8, color = 2, label = ps.lang('Labels.illegalFishzoneBlip'), enabled = true} },
-		{loc = vector3(3190.5, -974.99, 0.37),   radius = 250, debug = false, enabled = true, blipData = {sprite = 404, scale = 0.8, color = 2, label = ps.lang('Labels.illegalFishzoneBlip'), enabled = false} },
-		{loc = vector3(1235.08, 7926.63, -1.26), radius = 250, debug = false, enabled = true, blipData = {sprite = 404, scale = 0.8, color = 2, label = ps.lang('Labels.illegalFishzoneBlip'), enabled = false} },
-		{loc = vector3(-3196.07, 2601.24, 1.33), radius = 250, debug = false, enabled = true, blipData = {sprite = 404, scale = 0.8, color = 2, label = ps.lang('Labels.illegalFishzoneBlip'), enabled = false} },
+		{loc = vector3(1788.64, -3525.29, 0.54), radius = 250, debug = false, enabled = true, blipData = getBlipData('illegalFishingZones', true) },
+		{loc = vector3(3190.5, -974.99, 0.37),   radius = 250, debug = false, enabled = true, blipData = getBlipData('illegalFishingZones', false) },
+		{loc = vector3(1235.08, 7926.63, -1.26), radius = 250, debug = false, enabled = true, blipData = getBlipData('illegalFishingZones', false) },
+		{loc = vector3(-3196.07, 2601.24, 1.33), radius = 250, debug = false, enabled = true, blipData = getBlipData('illegalFishingZones', false) },
 	},
 	fishBuyers = { -- sell your fish here
-		{loc = vector4(-1814.64, -1194.00, 13.02-1, 238.98), ped = 'a_f_m_bevhills_02', enabled = true, blipData = {sprite = 272, scale = 0.8, color = 2, label = ps.lang('Labels.fishBuyerBlip'), enabled = true} },
+		{loc = vector4(-1814.64, -1194.00, 13.02-1, 238.98), ped = 'a_f_m_bevhills_02', enabled = true, blipData = getBlipData('fishBuyer', true) },
 	},
 	chumMaker = {  -- exchange fish for chum here
-		{loc = vector4(1026.52, -3037.92, 8.69-1, 350.03), ped = 's_m_y_dealer_01', enabled = true, blipData = {sprite = 272, scale = 0.8, color = 2, label = ps.lang('Labels.chumMakerBlip'), enabled = true} },
+		{loc = vector4(1026.52, -3037.92, 8.69-1, 350.03), ped = 's_m_y_dealer_01', enabled = true, blipData = getBlipData('chumMaker', true) },
 	},
 	shopLocation = { -- where to buy fishing supplies
-		{loc = vector4(1314.10, 4282.58, 33.91-1, 240.26), ped = 's_m_y_dealer_01', enabled = true, blipData = {sprite = 272, scale = 0.8, color = 2, label = ps.lang('Labels.shopLocationBlip'), enabled = true} },
+		{loc = vector4(1314.10, 4282.58, 33.91-1, 240.26), ped = 's_m_y_dealer_01', enabled = true, blipData = getBlipData('shopLocation', true) },
 	},
 	breakDown = { -- where to break down rusty items
-		{loc = vector3(1088.14, -2002.14, 30.88), blipData = {sprite = 365, scale = 0.8, color = 2, label = ps.lang('Labels.breakDownBlip'), enabled = true}}
+		{loc = vector3(1088.14, -2002.14, 30.88), blipData = getBlipData('breakDown', true), enabled = true}
 	}
 }
 

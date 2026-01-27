@@ -1,13 +1,27 @@
 
 local function found()
-	ps.notify(ps.lang('Fishing.found') , 'success')
+	Bridge.Notify.SendNotify(Bridge.Language.Locale('Notify.gotABite') , 'success')
 	FreezeEntityPosition(PlayerPedId(), true)
 	Wait(500)
 	FreezeEntityPosition(PlayerPedId(), false)
 end
 
-local peds = {}
+local function requestModel(model, timeout)
+	if not IsModelValid(model) then return false end
+	timeout = timeout or 10000
+	local start = GetGameTimer()
+	RequestModel(model)
+	while not HasModelLoaded(model) do
+		Wait(100)
+		if GetGameTimer() - start > timeout then
+			return false
+		end
+	end
+	return true
+end
 
+local peds = {}
+local zones = {}
 local function createBlip(loc, blipData)
 	local blip = AddBlipForCoord(loc.x, loc.y, loc.z)
 	SetBlipSprite(blip, blipData.sprite)
@@ -20,31 +34,32 @@ local function createBlip(loc, blipData)
 end
 
 local function initScript()
-	local zoneLocations = ps.callback('md-fishing:server:getLocations')
+	local zoneLocations = Bridge.Callback.Trigger('md-fishing:server:getLocations')
 
 	for k, v in pairs (zoneLocations.fishingZones) do
 		if not v.enabled then goto continue end
 		if v.blipData and v.blipData.enabled then
 			createBlip(v.loc, v.blipData)
 		end
-		local fishingZones = ps.zones.sphere({
-			name = 'fishingZone' .. k,
-			coords = v.loc,
-			radius = v.radius,
-			onEnter = function()
+		local fishingZones = Bridge.Point.Register(
+			'fishingZone' .. k,
+			v.loc,
+			v.radius,
+			nil,
+			function()
 				if Config.AlertInZone then
-					ps.notify(ps.lang('Fishing.inZone'), 'success')
+					Bridge.Notify.SendNotify(Bridge.Language.Locale('Notify.enteredZone'), 'success')
 				end
 				TriggerServerEvent('md-fishing:server:inZone', 'fishingZones', k)
 			end,
-			onExit = function()
+			function()
 				if Config.AlertInZone then
-					ps.notify(ps.lang('Fishing.outZone'), 'error')
+					Bridge.Notify.SendNotify(Bridge.Language.Locale('Notify.outOfZone'), 'error')
 				end
 				TriggerServerEvent('md-fishing:server:outZone')
-			end,
-			debug = v.debug,
-		})
+			end
+		)
+		zones[#zones + 1] = 'fishingZone' .. k
 		::continue::
 	end
 
@@ -53,98 +68,105 @@ local function initScript()
 		if v.blipData and v.blipData.enabled then
 			createBlip(v.loc, v.blipData)
 		end
-		local illegalFishingZones = ps.zones.sphere({
-			name = 'illegalFishingZone' .. k,
-			coords = v.loc,
-			radius = v.radius,
-			onEnter = function()
+		local illegalFishingZones = Bridge.Point.Register(
+			'illegalFishingZone' .. k,
+			v.loc,
+			v.radius,
+			nil,
+			function()
 				if Config.AlertInZone then
-					ps.notify(ps.lang('Fishing.inZone'), 'success')
+					Bridge.Notify.SendNotify(Bridge.Language.Locale('Notify.enteredZone'), 'success')
 				end
 				TriggerServerEvent('md-fishing:server:inZone', 'illegalFishingZones', k)
 			end,
-			onExit = function()
+			function()
 				if Config.AlertInZone then
-					ps.notify(ps.lang('Fishing.outZone'), 'error')
+					Bridge.Notify.SendNotify(Bridge.Language.Locale('Notify.outOfZone'), 'error')
 				end
 				TriggerServerEvent('md-fishing:server:outZone')
-			end,
-			debug = v.debug,
-		})
+			end
+		)
+		zones[#zones + 1] = 'illegalFishingZone' .. k
 		::continue::
 	end
 
 	for k, v in pairs (zoneLocations.fishBuyers) do
-		ps.requestModel(v.ped)
+		requestModel(v.ped)
 		peds[#peds + 1] = CreatePed(0, v.ped, v.loc.x, v.loc.y, v.loc.z, v.loc.w, false, false)
 		Freeze(peds[#peds], true, v.loc.w)
 		if v.blipData and v.blipData.enabled then
 			createBlip(v.loc, v.blipData)
 		end
-		ps.entityTarget(peds[#peds], {
+		Bridge.Target.AddLocalEntity(peds[#peds], {
 			{
-				icon = ps.lang('Targets.fishBuyer.icon'),
-				label = ps.lang('Targets.fishBuyer.label'),
+				icon = Bridge.Language.Locale('Targets.fishBuyer.icon'),
+				label = Bridge.Language.Locale('Targets.fishBuyer.label'),
 				action = function()
-					local itemList = ps.callback('md-fishing:server:getStores', 'fishSales', k)
+					local itemList = Bridge.Callback.Trigger('md-fishing:server:getStores', 'fishSales', k)
 					if not itemList then return end
 					local menu = {}
 					menu[#menu + 1] = {
 						order = 'a',
-						title = ps.lang('Targets.fishBuyer.sell.label'),
-						icon = ps.lang('Targets.fishBuyer.sell.icon'),
-						description = ps.lang('Targets.fishBuyer.sell.description'),
-						action = function()
+						title = Bridge.Language.Locale('Targets.fishBuyer.Menu.sellAllTitle'),
+						icon = Bridge.Language.Locale('Targets.fishBuyer.Menu.sellAllIcon'),
+						description = Bridge.Language.Locale('Targets.fishBuyer.Menu.sellAllDescription'),
+						onSelect = function()
 							TriggerServerEvent('md-fishing:server:sellFish', 'all', k)
 						end
 					}
 					for item, price in pairs (itemList) do
-						if not ps.hasItem(item) then goto continue end
+						if not Bridge.Inventory.HasItem(item) then goto continue end
+						local itemInfo = Bridge.Inventory.GetItemInfo(item)
 						menu[#menu + 1] = {
-							order = ps.getLabel(item),
-							title = ps.getLabel(item),
-							icon = ps.getImage(item),
-							description = ps.lang('Targets.fishBuyer.description', price),
-							action = function()
+							order = itemInfo.label,
+							title = itemInfo.label,
+							icon = itemInfo.image,
+							description = '$' .. price,
+							onSelect = function()
 								TriggerServerEvent('md-fishing:server:sellFish', item, k)
 							end
 						}
 						::continue::
 					end
 					table.sort(menu, function(a, b) return a.order < b.order end)
-					ps.menu(ps.lang('Targets.fishBuyer.menuTitle'), ps.lang('Targets.fishBuyer.menuTitle'), menu)
+					Bridge.Menu.Open({
+						id = Bridge.Language.Locale('Targets.fishBuyer.Menu.menuTitle'),
+						title = Bridge.Language.Locale('Targets.fishBuyer.Menu.menuTitle'),
+						options = menu
+					})
 				end,
 			},
 		})
 	end
 
 	for k, v in pairs (zoneLocations.shopLocation) do
-		ps.requestModel(v.ped)
+		requestModel(v.ped)
 		peds[#peds + 1] = CreatePed(0, v.ped, v.loc.x, v.loc.y, v.loc.z, v.loc.w, false, false)
 		Freeze(peds[#peds], true, v.loc.w)
 		if v.blipData and v.blipData.enabled then
 			createBlip(v.loc, v.blipData)
 		end
-		ps.entityTarget(peds[#peds], {
+		Bridge.Target.AddLocalEntity(peds[#peds], {
 			{
-				icon = 'fas fa-shopping-basket',
-				label = 'Browse Shop',
+				icon = Bridge.Language.Locale('Targets.shops.icon'),
+				label = Bridge.Language.Locale('Targets.shops.label'),
 				action = function()
-					local itemList = ps.callback('md-fishing:server:getStores', 'fishShop', k)
+					local itemList = Bridge.Callback.Trigger('md-fishing:server:getStores', 'fishShop', k)
 					if not itemList then return end
 					local menu = {}
 					for itemName, price in pairs (itemList) do
+						local itemInfo = Bridge.Inventory.GetItemInfo(itemName)
 						menu[#menu + 1] = {
-							title = ps.getLabel(itemName),
-							description = ps.lang('Info.currency').. price,
-							icon = ps.getImage(itemName),
-							action = function()
-								local input = ps.input(ps.lang('Targets.shopLocs.input.title', ps.getLabel(itemName)), {
-									{type = 'number', min = 0, max = v.amount, title = ps.lang('Targets.shopLocs.input.field1title')},
-									{type = 'select', title = ps.lang('Targets.shopLocs.input.field2title'),
+							title = itemInfo.label,
+							description = '$' .. price,
+							icon = itemInfo.image,
+							onSelect = function()
+								local input = Bridge.Input.Open(Bridge.Language.Locale('Targets.shops.input.title', itemInfo.label), {
+									{type = 'number', min = 0, max = v.amount, title = Bridge.Language.Locale('Targets.shops.input.field1title')},
+									{type = 'select', title = Bridge.Language.Locale('Targets.shops.input.field2title'),
 										options = {
-											{label = ps.lang('Targets.shopLocs.input.field2option1'), value = 'cash'},
-											{label = ps.lang('Targets.shopLocs.input.field2option2'), value = 'bank'}
+											{label = Bridge.Language.Locale('Targets.shops.input.field2option1'), value = 'cash'},
+											{label = Bridge.Language.Locale('Targets.shops.input.field2option2'), value = 'bank'}
 										}
 									}
 								})
@@ -153,29 +175,36 @@ local function initScript()
 							end
 						}
 					end
-					ps.menu(ps.lang('Targets.shopLocs.menuTitle'), ps.lang('Targets.shopLocs.menuTitle'), menu)
+					Bridge.Menu.Open({
+						id = Bridge.Language.Locale('Targets.shops.menuTitle'),
+						title = Bridge.Language.Locale('Targets.shops.menuTitle'),
+						options = menu
+					})
 				end,
 			},
 		})
 	end
 
 	for k, v in pairs (zoneLocations.chumMaker) do 
-		ps.requestModel(v.ped)
+		requestModel(v.ped)
 		peds[#peds + 1] = CreatePed(0, v.ped, v.loc.x, v.loc.y, v.loc.z, v.loc.w, false, false)
 		Freeze(peds[#peds], true, v.loc.w)
 		if v.blipData and v.blipData.enabled then
 			createBlip(v.loc, v.blipData)
 		end
-		ps.entityTarget(peds[#peds], {
+		Bridge.Target.AddLocalEntity(peds[#peds], {
 			{
-				label = ps.lang('Targets.chumMaker.label'),
-				icon = ps.lang('Targets.chumMaker.icon'),
+				label = Bridge.Language.Locale('Targets.chumMaker.label'),
+				icon = Bridge.Language.Locale('Targets.chumMaker.icon'),
 				action = function()
-					local input = ps.input(ps.lang('Targets.chumMaker.input.title'), {
+					local input = Bridge.Input.Open(Bridge.Language.Locale('Targets.chumMaker.input.title'), {
 						{
-							type = 'select', options = {{label = ps.lang('Info.yes'), value = true}, {label = ps.lang('Info.no'), value = false}},
-							title = ps.lang('Targets.chumMaker.input.field1title'),
-							description = ps.lang('Targets.chumMaker.input.description')
+							type = 'select', options = {
+								{label = Bridge.Language.Locale('Targets.chumMaker.input.yes'), value = true},
+								{label = Bridge.Language.Locale('Targets.chumMaker.input.no'), value = false}
+							},
+							title = Bridge.Language.Locale('Targets.chumMaker.input.field1Title'),
+							description = Bridge.Language.Locale('Targets.chumMaker.input.field1Description')
 						}
 					})
 					if not input then return end
@@ -190,24 +219,31 @@ local function initScript()
 		if v.blipData and v.blipData.enabled then
 			createBlip(v.loc, v.blipData)
 		end
-		ps.boxTarget('matbreakdown' ..k, v.loc, {length = 1.0, width = 1.0, height = 1.0}, {
+		Bridge.Target.AddBoxZone('matbreakdown' ..k, v.loc, vector3(1.0, 1.0, 1.0), v.loc.w or 0.0, {
 			{
-				label = ps.lang('Targets.breakDown.label'),
-				icon = ps.lang('Targets.breakDown.icon'),
+				label = Bridge.Language.Locale('Targets.breakDown.label'),
+				icon = Bridge.Language.Locale('Targets.breakDown.icon'),
 				action = function()
-					local itemList = ps.callback('md-fishing:server:getBreakdown', k)
+					local itemList = Bridge.Callback.Trigger('md-fishing:server:getBreakdown', k)
 					local menu = {}
 					for item, values in pairs (itemList) do
+						local itemInfo = Bridge.Inventory.GetItemInfo(item)
 						menu[#menu + 1] = {
-							title = ps.getLabel(item),
-							description = ps.lang('Targets.breakDown.input.description', ps.getLabel(item)),
-							action = function()
-								if not ps.progressbar(ps.lang('Targets.breakDown.progressbar', ps.getLabel(item)), 4000, 'weld') then return end
+							
+							title = itemInfo.label,
+							description = Bridge.Language.Locale('Targets.breakDown.input.description', itemInfo.label),
+							icon = itemInfo.image,
+							onSelect = function()
+								if not ps.progressbar(Bridge.Language.Locale('Targets.breakDown.progressbar', itemInfo.label), 4000, 'weld') then return end
 								TriggerServerEvent('md-fishing:server:breakDownRustys', k, item)
 							end
 						}
 					end
-					ps.menu(ps.lang('Targets.breakDown.menuTitle'), ps.lang('Targets.breakDown.menuTitle'), menu)
+					Bridge.Menu.Open({
+						id = Bridge.Language.Locale('Targets.breakDown.menuTitle'),
+						title = Bridge.Language.Locale('Targets.breakDown.menuTitle'),
+						options = menu
+					})
 				end
 			}
 		})
@@ -219,8 +255,8 @@ initScript()
 local pole = nil
 local function poleMake()
     local pos = GetEntityCoords(PlayerPedId(), true)
-	ps.requestModel('prop_fishing_rod_01')
-	ps.requestAnim('amb@world_human_stand_fishing@idle_a')
+	requestModel('prop_fishing_rod_01')
+	Bridge.Anim.RequestDict('amb@world_human_stand_fishing@idle_a')
 	TaskPlayAnim(PlayerPedId(), 'amb@world_human_stand_fishing@idle_a', 'idle_a', 5.0, -1, -1, 50, 0, false, false, false)
 	pole = CreateObject("prop_fishing_rod_01", pos.x, pos.y, pos.z, true, true, true)
     AttachEntityToEntity(pole, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
@@ -245,13 +281,13 @@ end)
 local fishing = false
 RegisterNetEvent('md-fishing:client:fishing', function(Timer)
 	if IsPedInAnyVehicle(PlayerPedId(), false) then
-		ps.notify(ps.lang('Fails.inVehicle'), 'error')
+		Bridge.Notify.SendNotify(Bridge.Language.Locale('Notify.inVehicle'), 'error')
 		TriggerServerEvent('md-fishing:server:stopFishing')
 		return
 	end
 
 	if fishing then
-		ps.notify(ps.lang('Fails.alreadyFishing'), 'error')
+		Bridge.Notify.SendNotify(Bridge.Language.Locale('Notify.alreadyFishing'), 'error')
 		return
 	end
 
@@ -278,7 +314,7 @@ RegisterNetEvent('md-fishing:client:fishing', function(Timer)
 		if minigame() then
 			TriggerServerEvent('md-fishing:server:givefish')
 		else
-			ps.notify(ps.lang('Fails.failedCatch'), 'error')
+			Bridge.Notify.SendNotify(Bridge.Language.Locale('Fails.failedCatch'), 'error')
 		end
 		if not Config.AutoRecast then
 			fishing = false
@@ -299,36 +335,49 @@ RegisterCommand('anchor', function()
     if IsPedInAnyBoat(ped) then
         local boat = GetVehiclePedIsIn(ped, true)
         if not IsEntityInWater(boat) then
-            ps.notify(ps.lang('anchor.notInWater'), 'error')
+            Bridge.Notify.SendNotify(Bridge.Language.Locale('Notify.notInWater'), 'error')
             return
         end
         if anchor then
             SetBoatAnchor(boat, false)
-            ps.notify(ps.lang('anchor.unanchored'), 'success')
+            Bridge.Notify.SendNotify(Bridge.Language.Locale('Notify.unanchored'), 'success')
             anchor = false
         else
             SetBoatAnchor(boat, true)
             SetForcedBoatLocationWhenAnchored(boat, true)
             SetBoatFrozenWhenAnchored(boat, true)
-            ps.notify(ps.lang('anchor.anchored') 'success')
+            Bridge.Notify.SendNotify(Bridge.Language.Locale('Notify.anchored'), 'success')
             anchor = true
         end
     else
-        ps.notify(ps.lang('anchor.noBoat'))
+        Bridge.Notify.SendNotify(Bridge.Language.Locale('Notify.noBoat'), 'error')
     end
 end, false)
 
 RegisterCommand('fishingRep', function()
-	local rep = ps.callback('md-fishing:server:getLevels')
+	local rep = Bridge.Callback.Trigger('md-fishing:server:getLevels')
 	local menu = {}
 	for k, v in pairs (rep.level) do
+		local icon
+		if k == 'fishing' then
+			icon = Bridge.Language.Locale('Command.iconFish')
+		elseif k == 'magnet' then
+			icon = Bridge.Language.Locale('Command.iconMagnet')
+		elseif k == 'illegal' then
+			icon = Bridge.Language.Locale('Command.iconIllegal')
+		end
 		menu[#menu + 1] = {
-			title = ps.lang('RepCommand.'..k, v.level),
-			description = ps.lang('RepCommand.description', v.xp, rep.maxXP),
-			action = function()
+			title = Bridge.Language.Locale('Command.Rep', k, v.level),
+			description = Bridge.Language.Locale('Command.RepDescription', v.xp, rep.maxXP),
+			icon = icon,
+			onSelect = function()
 				return
 			end
 		}
 	end
-	ps.menu(ps.lang('RepCommand.header'), ps.lang('RepCommand.header'), menu)
+	Bridge.Menu.Open({
+		id = Bridge.Language.Locale('Command.id'),
+		title = Bridge.Language.Locale('Command.header'),
+		options = menu
+	})
 end, false)
